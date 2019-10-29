@@ -15,7 +15,7 @@ import java.util.List;
 public abstract class Cell<VH extends ViewHolder> implements CellParent<VH> {
 
     public static final int FULL_SPAN = -1;
-
+    private int mSpanSize = 1;
     private CellParent<VH> mParent;
     private ObservableDataList<Cell<VH>> observableDataList = new ObservableDataList<>();
 
@@ -59,7 +59,11 @@ public abstract class Cell<VH extends ViewHolder> implements CellParent<VH> {
     public abstract int getViewType();
 
     public int getSpanSize() {
-        return 1;
+        return mSpanSize;
+    }
+
+    public void setSpanSize(int spanSize) {
+        this.mSpanSize = spanSize;
     }
 
     public void bindViewHolder(VH vh) {

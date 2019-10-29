@@ -12,6 +12,7 @@ import com.zhangqiang.celladapter.vh.ViewHolder;
 
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class CellListAdapter extends BaseAdapter implements Adapter, DataList<Cell> {
 
     private final CellRoot cellRoot = new CellRoot(this);

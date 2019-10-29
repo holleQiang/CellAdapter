@@ -61,16 +61,16 @@ public class MainActivity extends AppCompatActivity {
         };
         btExchange.setOnCheckedChangeListener(listener);
         listener.onCheckedChanged(btExchange, btExchange.isChecked());
-//        final CellListAdapter cellListAdapter = new CellListAdapter();
-//
-//        dataList = new ArrayList<>();
-//        dataList.add(newAddCell("1"));
-//        dataList.add(newAddCell("2"));
-//        dataList.add(newAddCell("3"));
-//        dataList.add(newAddCell("4"));
-//        dataList.add(newAddCell("5"));
-//        cellListAdapter.setDataList(dataList);
-//        listView.setAdapter(cellListAdapter);
+        final CellListAdapter cellListAdapter = new CellListAdapter();
+
+        dataList = new ArrayList<>();
+        dataList.add(newAddCell("1"));
+        dataList.add(newAddCell("2"));
+        dataList.add(newAddCell("3"));
+        dataList.add(newAddCell("4"));
+        dataList.add(newAddCell("5"));
+        cellListAdapter.setDataList(dataList);
+        listView.setAdapter(cellListAdapter);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
             @Override

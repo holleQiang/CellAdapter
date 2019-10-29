@@ -36,4 +36,9 @@ public class MultiCell<T> extends Cell<RVViewHolder> {
     public void setViewHolderBinder(ViewHolderBinder<RVViewHolder,T> viewHolderBinder) {
         this.viewHolderBinder = viewHolderBinder;
     }
+
+    public void setData(T data) {
+        this.data = data;
+        invalidate();
+    }
 }

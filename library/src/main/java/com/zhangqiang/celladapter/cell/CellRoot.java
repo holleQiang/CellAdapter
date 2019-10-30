@@ -1,60 +1,18 @@
-package com.zhangqiang.celladapter;
+package com.zhangqiang.celladapter.cell;
 
-import android.support.annotation.NonNull;
-
-import com.zhangqiang.celladapter.cell.Cell;
-import com.zhangqiang.celladapter.cell.CellParent;
-import com.zhangqiang.celladapter.cell.CellUtils;
+import com.zhangqiang.celladapter.Adapter;
 import com.zhangqiang.celladapter.observable.ObservableDataList;
 
 import java.util.List;
 
-final class CellRoot implements CellParent {
+public final class CellRoot implements CellParent {
 
     private final ObservableDataList<Cell> dataObserver = new ObservableDataList<>();
     private Adapter mAdapter;
 
-    CellRoot(Adapter adapter) {
+    public CellRoot(Adapter adapter) {
         this.mAdapter = adapter;
-        dataObserver.addDataObserver(new ParentSettingsObserver(this) {
-            @Override
-            public <E extends Cell> void onDataAdded(int position, @NonNull List<E> addedList) {
-                super.onDataAdded(position, addedList);
-                int index = CellUtils.getCellCount(dataObserver.subList(0, position));
-                mAdapter.notifyItemRangeInserted(index, CellUtils.getCellCount(addedList));
-            }
-
-            @Override
-            public <E extends Cell> void onDataRemoved(int position, @NonNull List<E> removedList) {
-                super.onDataRemoved(position, removedList);
-                int index = CellUtils.getCellCount(dataObserver.subList(0, position));
-                mAdapter.notifyItemRangeRemoved(index, CellUtils.getCellCount(removedList));
-            }
-
-            @Override
-            public <E extends Cell> void onDataChanged(int position, int count, @NonNull List<E> oldList, @NonNull List<E> newList) {
-                super.onDataChanged(position, count, oldList, newList);
-                if (oldList.size() == count) {
-                    mAdapter.notifyDataSetChanged();
-                } else {
-                    int index = CellUtils.getCellCount(dataObserver.subList(0, position));
-                    mAdapter.notifyItemRangeChanged(index, CellUtils.getCellCount(newList));
-                }
-            }
-
-            @Override
-            public void onDataMoved(int fromPosition, int toPosition) {
-                super.onDataMoved(fromPosition, toPosition);
-                if (CellUtils.getChildCount(getDataAt(fromPosition)) == 0
-                        && CellUtils.getChildCount(getDataAt(toPosition)) == 0) {
-                    fromPosition = CellUtils.getCellCount(subList(0, fromPosition));
-                    toPosition = CellUtils.getCellCount(subList(0, toPosition));
-                    mAdapter.notifyItemMoved(fromPosition, toPosition);
-                } else {
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
-        });
+        dataObserver.addDataObserver(new ParentSettingsObserver(this));
     }
 
     public int getTotalCellCount() {
@@ -88,6 +46,11 @@ final class CellRoot implements CellParent {
             }
         }
         return null;
+    }
+
+    @Override
+    public CellParent getParent() {
+        return this;
     }
 
     @Override

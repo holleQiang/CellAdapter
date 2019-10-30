@@ -7,6 +7,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.ViewGroup;
 
 import com.zhangqiang.celladapter.cell.Cell;
+import com.zhangqiang.celladapter.cell.CellRoot;
 import com.zhangqiang.celladapter.observable.DataList;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 

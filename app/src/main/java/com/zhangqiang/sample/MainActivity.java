@@ -16,10 +16,12 @@ import com.zhangqiang.celladapter.cell.Cell;
 import com.zhangqiang.celladapter.cell.CellParent;
 import com.zhangqiang.celladapter.cell.ViewHolderBinder;
 import com.zhangqiang.celladapter.cell.MultiCell;
+import com.zhangqiang.celladapter.drag.CellDragHelper;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -67,39 +69,10 @@ public class MainActivity extends AppCompatActivity {
         cellListAdapter.setDataList(dataList);
         listView.setAdapter(cellListAdapter);
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new CellDragHelper(cellRVAdapter) {
             @Override
             public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
                 return makeMovementFlags(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, 0);
-            }
-
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
-                Cell fromCell = cellRVAdapter.getCellAt(viewHolder.getAdapterPosition());
-                Cell toCell = cellRVAdapter.getCellAt(viewHolder1.getAdapterPosition());
-                CellParent fromCellParent = fromCell.getParent();
-                if (fromCellParent != null && fromCellParent == toCell.getParent()) {
-
-                    int fromPosition = fromCellParent.getDataIndex(fromCell);
-                    int toPosition = fromCellParent.getDataIndex(toCell);
-                    fromCellParent.swap(fromPosition, toPosition);
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void onMoved(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, int fromPos, @NonNull RecyclerView.ViewHolder target, int toPos, int x, int y) {
-                super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y);
-
-//                Cell<RVViewHolder> fromCell = cellRVAdapter.getCellAt(fromPos);
-//                Cell<RVViewHolder> toCell = cellRVAdapter.getCellAt(toPos);
-//                CellParent<RVViewHolder> parent = fromCell.getParent();
-//                if (parent == toCell.getParent()) {
-//                    int fromPosition = parent.getDataIndex(fromCell);
-//                    int toPosition = parent.getDataIndex(toCell);
-//                    parent.swap(fromPosition, toPosition);
-//                }
             }
 
             @Override

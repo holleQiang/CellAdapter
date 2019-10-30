@@ -5,6 +5,7 @@ import android.util.SparseIntArray;
 import android.view.ViewGroup;
 
 import com.zhangqiang.celladapter.cell.Cell;
+import com.zhangqiang.celladapter.cell.CellRoot;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 
 public class CellAdapterHelper {

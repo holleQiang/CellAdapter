@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface CellParent extends DataList<Cell> {
 
+    CellParent getParent();
+
     <E extends Cell> void handChildChanged(CellParent childParent, int position, int count, List<E> oldList, List<E> newList);
 
     void handChildMoved(CellParent childParent, int fromPosition, int toPosition);

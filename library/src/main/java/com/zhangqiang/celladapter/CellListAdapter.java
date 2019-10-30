@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.zhangqiang.celladapter.cell.Cell;
+import com.zhangqiang.celladapter.cell.CellRoot;
 import com.zhangqiang.celladapter.observable.DataList;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 

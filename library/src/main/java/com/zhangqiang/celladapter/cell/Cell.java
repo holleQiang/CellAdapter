@@ -1,11 +1,9 @@
 package com.zhangqiang.celladapter.cell;
 
-import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.zhangqiang.celladapter.ParentSettingsObserver;
 import com.zhangqiang.celladapter.R;
 import com.zhangqiang.celladapter.observable.ObservableDataList;
 import com.zhangqiang.celladapter.vh.ViewHolder;
@@ -21,33 +19,7 @@ public abstract class Cell implements CellParent {
     private ObservableDataList<Cell> observableDataList = new ObservableDataList<>();
 
     public Cell() {
-        observableDataList.addDataObserver(new ParentSettingsObserver(this){
-
-            @Override
-            public <E extends Cell> void onDataChanged(int position, int count, @NonNull List<E> oldList, @NonNull List<E> newList) {
-                super.onDataChanged(position, count, oldList, newList);
-                handChildChangedInternal(position, count,oldList,newList);
-            }
-
-            @Override
-            public <E extends Cell> void onDataRemoved(int position, @NonNull List<E> removedList) {
-                super.onDataRemoved(position, removedList);
-                handChildRemovedInternal(position,removedList);
-            }
-
-
-            @Override
-            public <E extends Cell> void onDataAdded(int position, @NonNull List<E> addedList) {
-                super.onDataAdded(position, addedList);
-                handChildAddedInternal(position,addedList);
-            }
-
-            @Override
-            public void onDataMoved(int fromPosition, int toPosition) {
-                super.onDataMoved(fromPosition, toPosition);
-                handChildMovedInternal(fromPosition,toPosition);
-            }
-        });
+        observableDataList.addDataObserver(new ParentSettingsObserver(this));
     }
 
 
@@ -95,6 +67,7 @@ public abstract class Cell implements CellParent {
 
     protected abstract void onBindViewHolder(ViewHolder vh);
 
+    @Override
     public CellParent getParent() {
         return mParent;
     }
@@ -207,35 +180,7 @@ public abstract class Cell implements CellParent {
         return observableDataList.subList(position, count);
     }
 
-    private <E extends Cell> void handChildChangedInternal(int position, int count, List<E> oldList, List<E> newList) {
-        CellParent parent = getParent();
-        if (parent != null) {
-            parent.handChildChanged(this,position, count, oldList, newList);
-        }
-    }
 
-    private <E extends Cell> void handChildRemovedInternal(int position, List<E> removedList) {
-        CellParent parent = getParent();
-        if (parent != null) {
-            parent.handChildRemoved(this,position, removedList);
-        }
-    }
-
-
-    private <E extends Cell> void handChildAddedInternal(int position, List<E> addedList) {
-
-        CellParent parent = getParent();
-        if (parent != null) {
-            parent.handChildAdded(this,position, addedList);
-        }
-    }
-
-    private void handChildMovedInternal(int fromPosition, int toPosition) {
-        CellParent parent = getParent();
-        if (parent != null) {
-            parent.handChildMoved(this,fromPosition, toPosition);
-        }
-    }
 
     @Override
     public <E extends Cell> void handChildChanged(CellParent childParent, int position, int count, List<E> oldList, List<E> newList) {

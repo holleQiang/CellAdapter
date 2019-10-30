@@ -1,5 +1,6 @@
 package com.zhangqiang.celladapter.cell;
 
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -183,7 +184,7 @@ public abstract class Cell implements CellParent {
 
 
     @Override
-    public <E extends Cell> void handChildChanged(CellParent childParent, int position, int count, List<E> oldList, List<E> newList) {
+    public <E extends Cell> void handChildChanged(CellParent childParent, int position, int count, @NonNull List<E> oldList, @NonNull List<E> newList) {
         CellParent parent = getParent();
         if (parent != null) {
             parent.handChildChanged(childParent,position, count, oldList, newList);
@@ -191,7 +192,7 @@ public abstract class Cell implements CellParent {
     }
 
     @Override
-    public <E extends Cell> void handChildAdded(CellParent childParent, int position, List<E> addedList) {
+    public <E extends Cell> void handChildAdded(CellParent childParent, int position, @NonNull List<E> addedList) {
         CellParent parent = getParent();
         if (parent != null) {
             parent.handChildAdded(childParent, position, addedList);
@@ -207,7 +208,7 @@ public abstract class Cell implements CellParent {
     }
 
     @Override
-    public <E extends Cell> void handChildRemoved(CellParent childParent, int position, List<E> removedList) {
+    public <E extends Cell> void handChildRemoved(CellParent childParent, int position, @NonNull List<E> removedList) {
         CellParent parent = getParent();
         if (parent != null) {
             parent.handChildRemoved(childParent, position, removedList);

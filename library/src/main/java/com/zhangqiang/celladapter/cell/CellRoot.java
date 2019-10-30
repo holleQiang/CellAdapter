@@ -1,5 +1,7 @@
 package com.zhangqiang.celladapter.cell;
 
+import android.support.annotation.NonNull;
+
 import com.zhangqiang.celladapter.Adapter;
 import com.zhangqiang.celladapter.observable.ObservableDataList;
 
@@ -54,8 +56,12 @@ public final class CellRoot implements CellParent {
     }
 
     @Override
-    public <E extends Cell> void handChildChanged(CellParent childParent, int position, int count, List<E> oldList, List<E> newList) {
+    public <E extends Cell> void handChildChanged(CellParent childParent, int position, int count, @NonNull List<E> oldList,@NonNull  List<E> newList) {
 
+        if (oldList.size() != newList.size()) {
+            mAdapter.notifyDataSetChanged();
+            return;
+        }
         int index = getRealChildIndex(childParent, position);
         if (index < 0) {
             return;
@@ -65,7 +71,7 @@ public final class CellRoot implements CellParent {
 
 
     @Override
-    public <E extends Cell> void handChildRemoved(CellParent childParent, int position, List<E> removedList) {
+    public <E extends Cell> void handChildRemoved(CellParent childParent, int position,@NonNull  List<E> removedList) {
 
         int index = getRealChildIndex(childParent, position);
         if (index < 0) {
@@ -96,7 +102,7 @@ public final class CellRoot implements CellParent {
     }
 
     @Override
-    public <E extends Cell> void handChildAdded(CellParent childParent, int position, List<E> addedList) {
+    public <E extends Cell> void handChildAdded(CellParent childParent, int position,@NonNull  List<E> addedList) {
 
         int index = getRealChildIndex(childParent, position);
         if (index < 0) {

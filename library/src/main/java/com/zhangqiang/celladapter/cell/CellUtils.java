@@ -2,95 +2,108 @@ package com.zhangqiang.celladapter.cell;
 
 import android.os.Looper;
 
-import com.zhangqiang.celladapter.vh.ViewHolder;
-
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
 public class CellUtils {
 
-    private static final Deque<Object> mCellDeque = new LinkedList<>();
+    private static final Deque<Cell> mCellDeque = new LinkedList<>();
 
 
-    public static <VH extends ViewHolder> int indexOfChild(Cell<VH> cellParent, Cell<VH> child) {
+    public static int indexOfChild(Cell cellParent, Cell child) {
 
-        checkThread();
+        try {
 
-        int index = -1;
-        if (child == null) {
-            return index;
-        }
-        mCellDeque.clear();
-        addChildToStack(cellParent);
-        Cell<VH> tempCell;
-        while ((tempCell = (Cell<VH>) mCellDeque.pollLast()) != null) {
-            index++;
-            if (tempCell == child) {
+            checkThread();
+
+            int index = -1;
+            if (child == null) {
                 return index;
             }
-            addChildToStack(tempCell);
-        }
-        return -1;
-    }
-
-    public static <VH extends ViewHolder> int getChildCount(Cell<VH> cellParent) {
-
-        checkThread();
-
-        int count = 0;
-        if (cellParent == null) {
-            return count;
-        }
-        mCellDeque.clear();
-        addChildToStack(cellParent);
-        Cell<VH> tempCell;
-        while ((tempCell = (Cell<VH>) mCellDeque.pollLast()) != null) {
-            count++;
-            addChildToStack(tempCell);
-        }
-        return count;
-    }
-
-
-    public static <VH extends ViewHolder> int getChildCount(Cell<VH> cellParent, int position, int offset) {
-
-        checkThread();
-
-        int count = 0;
-        if (cellParent == null) {
-            return count;
-        }
-        mCellDeque.clear();
-        addChildToStack(cellParent,position,offset);
-        Cell<VH> tempCell;
-        while ((tempCell = (Cell<VH>) mCellDeque.pollLast()) != null) {
-            count++;
-            addChildToStack(tempCell);
-        }
-        return count;
-    }
-
-
-    public static <VH extends ViewHolder> Cell<VH> getChildAt(Cell<VH> cellParent,int position) {
-
-        checkThread();
-
-        if (cellParent == null) {
-            return null;
-        }
-        int index = -1;
-        mCellDeque.clear();
-        addChildToStack(cellParent);
-        Cell<VH> tempCell;
-        while ((tempCell = (Cell<VH>) mCellDeque.pollLast()) != null) {
-            index++;
-            if (position == index) {
-                return tempCell;
+            addChildToStack(cellParent);
+            Cell tempCell;
+            while ((tempCell = mCellDeque.pollLast()) != null) {
+                index++;
+                if (tempCell == child) {
+                    return index;
+                }
+                addChildToStack(tempCell);
             }
-            addChildToStack(tempCell);
+            return -1;
+        } finally {
+            mCellDeque.clear();
         }
-        throw new IndexOutOfBoundsException("position is " + position + ",count is : " + (index + 1));
+    }
+
+    public static int getChildCount(Cell cellParent) {
+
+        try {
+
+            checkThread();
+
+            int count = 0;
+            if (cellParent == null) {
+                return count;
+            }
+            addChildToStack(cellParent);
+            Cell tempCell;
+            while ((tempCell = mCellDeque.pollLast()) != null) {
+                count++;
+                addChildToStack(tempCell);
+            }
+            return count;
+        } finally {
+            mCellDeque.clear();
+        }
+    }
+
+
+    public static int getChildCount(Cell cellParent, int position, int offset) {
+
+        try {
+            checkThread();
+
+            int count = 0;
+            if (cellParent == null) {
+                return count;
+            }
+            addChildToStack(cellParent, position, offset);
+            Cell tempCell;
+            while ((tempCell = mCellDeque.pollLast()) != null) {
+                count++;
+                addChildToStack(tempCell);
+            }
+            return count;
+        }finally {
+            mCellDeque.clear();
+        }
+    }
+
+
+    public static Cell getChildAt(Cell cellParent, int position) {
+
+        try {
+
+            checkThread();
+
+            if (cellParent == null) {
+                return null;
+            }
+            int index = -1;
+            addChildToStack(cellParent);
+            Cell tempCell;
+            while ((tempCell = mCellDeque.pollLast()) != null) {
+                index++;
+                if (position == index) {
+                    return tempCell;
+                }
+                addChildToStack(tempCell);
+            }
+            throw new IndexOutOfBoundsException("position is " + position + ",count is : " + (index + 1));
+        }finally {
+            mCellDeque.clear();
+        }
     }
 
     public static <C extends Cell> int getCellCount(List<C> cellList) {
@@ -105,14 +118,14 @@ public class CellUtils {
         return count;
     }
 
-    private static <VH extends ViewHolder> void addChildToStack(Cell<VH> cellParent) {
+    private static void addChildToStack(Cell cellParent) {
         int childCount = cellParent.getDataCount();
         for (int i = childCount - 1; i >= 0; i--) {
             mCellDeque.offerLast(cellParent.getDataAt(i));
         }
     }
 
-    private static <VH extends ViewHolder> void addChildToStack(Cell<VH> cellParent, int from, int offset) {
+    private static void addChildToStack(Cell cellParent, int from, int offset) {
         int childCount = cellParent.getDataCount();
         if (from < 0 || from + offset >= childCount) {
             throw new IndexOutOfBoundsException();

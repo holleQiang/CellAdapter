@@ -2,7 +2,7 @@ package com.zhangqiang.celladapter.cell;
 
 import com.zhangqiang.celladapter.vh.ViewHolder;
 
-public interface ViewHolderBinder<VH extends ViewHolder,T>{
+public interface ViewHolderBinder<T>{
 
-    void onBind(VH viewHolder,T t);
+    void onBind(ViewHolder viewHolder, T t);
 }

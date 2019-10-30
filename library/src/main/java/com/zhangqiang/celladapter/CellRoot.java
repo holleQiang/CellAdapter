@@ -1,37 +1,38 @@
-package com.zhangqiang.celladapter.cell;
+package com.zhangqiang.celladapter;
 
 import android.support.annotation.NonNull;
 
-import com.zhangqiang.celladapter.Adapter;
+import com.zhangqiang.celladapter.cell.Cell;
+import com.zhangqiang.celladapter.cell.CellParent;
+import com.zhangqiang.celladapter.cell.CellUtils;
 import com.zhangqiang.celladapter.observable.ObservableDataList;
-import com.zhangqiang.celladapter.vh.ViewHolder;
 
 import java.util.List;
 
-public class CellRoot<VH extends ViewHolder> implements CellParent<VH> {
+final class CellRoot implements CellParent {
 
-    private final ObservableDataList<Cell<VH>> dataObserver = new ObservableDataList<>();
+    private final ObservableDataList<Cell> dataObserver = new ObservableDataList<>();
     private Adapter mAdapter;
 
-    public CellRoot(Adapter adapter) {
+    CellRoot(Adapter adapter) {
         this.mAdapter = adapter;
-        dataObserver.addDataObserver(new ParentSettingsObserver<VH>(this) {
+        dataObserver.addDataObserver(new ParentSettingsObserver(this) {
             @Override
-            public <E extends Cell<VH>> void onDataAdded(int position, @NonNull List<E> addedList) {
+            public <E extends Cell> void onDataAdded(int position, @NonNull List<E> addedList) {
                 super.onDataAdded(position, addedList);
                 int index = CellUtils.getCellCount(dataObserver.subList(0, position));
                 mAdapter.notifyItemRangeInserted(index, CellUtils.getCellCount(addedList));
             }
 
             @Override
-            public <E extends Cell<VH>> void onDataRemoved(int position, @NonNull List<E> removedList) {
+            public <E extends Cell> void onDataRemoved(int position, @NonNull List<E> removedList) {
                 super.onDataRemoved(position, removedList);
                 int index = CellUtils.getCellCount(dataObserver.subList(0, position));
                 mAdapter.notifyItemRangeRemoved(index, CellUtils.getCellCount(removedList));
             }
 
             @Override
-            public <E extends Cell<VH>> void onDataChanged(int position, int count, @NonNull List<E> oldList, @NonNull List<E> newList) {
+            public <E extends Cell> void onDataChanged(int position, int count, @NonNull List<E> oldList, @NonNull List<E> newList) {
                 super.onDataChanged(position, count, oldList, newList);
                 if (oldList.size() == count) {
                     mAdapter.notifyDataSetChanged();
@@ -61,20 +62,20 @@ public class CellRoot<VH extends ViewHolder> implements CellParent<VH> {
         int dataCount = getDataCount();
         for (int i = 0; i < dataCount; i++) {
             count++;
-            Cell<VH> data = getDataAt(i);
+            Cell data = getDataAt(i);
             count += CellUtils.getChildCount(data);
         }
         return count;
     }
 
-    public Cell<VH> getCellAt(int index) {
+    public Cell getCellAt(int index) {
         if (index < 0) {
             return null;
         }
         int tempIndex = 0;
         int dataCount = getDataCount();
         for (int i = 0; i < dataCount; i++) {
-            Cell<VH> data = getDataAt(i);
+            Cell data = getDataAt(i);
             if (tempIndex == index) {
                 return data;
             }
@@ -90,7 +91,7 @@ public class CellRoot<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public <E extends Cell<VH>> void handChildChanged(CellParent<VH> childParent, int position, int count, List<E> oldList, List<E> newList) {
+    public <E extends Cell> void handChildChanged(CellParent childParent, int position, int count, List<E> oldList, List<E> newList) {
 
         int index = getRealChildIndex(childParent, position);
         if (index < 0) {
@@ -101,7 +102,7 @@ public class CellRoot<VH extends ViewHolder> implements CellParent<VH> {
 
 
     @Override
-    public <E extends Cell<VH>> void handChildRemoved(CellParent<VH> childParent, int position, List<E> removedList) {
+    public <E extends Cell> void handChildRemoved(CellParent childParent, int position, List<E> removedList) {
 
         int index = getRealChildIndex(childParent, position);
         if (index < 0) {
@@ -111,11 +112,11 @@ public class CellRoot<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public void handChildMoved(CellParent<VH> childParent, int fromPosition, int toPosition) {
+    public void handChildMoved(CellParent childParent, int fromPosition, int toPosition) {
 
 
-        Cell<VH> fromCell = childParent.getDataAt(fromPosition);
-        Cell<VH> toCell = childParent.getDataAt(toPosition);
+        Cell fromCell = childParent.getDataAt(fromPosition);
+        Cell toCell = childParent.getDataAt(toPosition);
         if (fromCell.isEmpty() && toCell.isEmpty()) {
             int realFromPosition = getRealChildIndex(childParent, fromPosition);
             if (realFromPosition < 0) {
@@ -132,7 +133,7 @@ public class CellRoot<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public <E extends Cell<VH>> void handChildAdded(CellParent<VH> childParent, int position, List<E> addedList) {
+    public <E extends Cell> void handChildAdded(CellParent childParent, int position, List<E> addedList) {
 
         int index = getRealChildIndex(childParent, position);
         if (index < 0) {
@@ -142,32 +143,32 @@ public class CellRoot<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public void addDataAtIndex(Cell<VH> data, int position) {
+    public void addDataAtIndex(Cell data, int position) {
         dataObserver.addDataAtIndex(data, position);
     }
 
     @Override
-    public <E extends Cell<VH>> void addDataListAtIndex(List<E> dataList, int position) {
+    public <E extends Cell> void addDataListAtIndex(List<E> dataList, int position) {
         dataObserver.addDataListAtIndex(dataList, position);
     }
 
     @Override
-    public void addDataAtLast(Cell<VH> data) {
+    public void addDataAtLast(Cell data) {
         dataObserver.addDataAtLast(data);
     }
 
     @Override
-    public void addDataAtFirst(Cell<VH> data) {
+    public void addDataAtFirst(Cell data) {
         dataObserver.addDataAtFirst(data);
     }
 
     @Override
-    public <E extends Cell<VH>> void addDataListAtLast(List<E> dataList) {
+    public <E extends Cell> void addDataListAtLast(List<E> dataList) {
         dataObserver.addDataListAtLast(dataList);
     }
 
     @Override
-    public <E extends Cell<VH>> void addDataListAtFirst(List<E> dataList) {
+    public <E extends Cell> void addDataListAtFirst(List<E> dataList) {
         dataObserver.addDataListAtFirst(dataList);
     }
 
@@ -177,7 +178,7 @@ public class CellRoot<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public void removeData(Cell<VH> data) {
+    public void removeData(Cell data) {
         dataObserver.removeData(data);
     }
 
@@ -197,7 +198,7 @@ public class CellRoot<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public int getDataIndex(Cell<VH> data) {
+    public int getDataIndex(Cell data) {
         return dataObserver.getDataIndex(data);
     }
 
@@ -207,7 +208,7 @@ public class CellRoot<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public <E extends Cell<VH>> void setDataList(List<E> dataList) {
+    public <E extends Cell> void setDataList(List<E> dataList) {
         dataObserver.setDataList(dataList);
     }
 
@@ -217,7 +218,7 @@ public class CellRoot<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public Cell<VH> getDataAt(int position) {
+    public Cell getDataAt(int position) {
         return dataObserver.getDataAt(position);
     }
 
@@ -227,26 +228,26 @@ public class CellRoot<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public void replace(int position, Cell<VH> data) {
+    public void replace(int position, Cell data) {
         dataObserver.replace(position, data);
     }
 
     @Override
-    public <E extends Cell<VH>> void replace(int position, List<E> dataList) {
+    public <E extends Cell> void replace(int position, List<E> dataList) {
         dataObserver.replace(position, dataList);
     }
 
     @Override
-    public List<Cell<VH>> subList(int position, int count) {
+    public List<Cell> subList(int position, int count) {
         return dataObserver.subList(position, count);
     }
 
 
-    public int getIndexOfChild(Cell<VH> child) {
+    public int getIndexOfChild(Cell child) {
 
         int childCount = getTotalCellCount();
         for (int i = 0; i < childCount; i++) {
-            Cell<VH> childAt = getCellAt(i);
+            Cell childAt = getCellAt(i);
             if (childAt == child) {
                 return i;
             }
@@ -254,11 +255,11 @@ public class CellRoot<VH extends ViewHolder> implements CellParent<VH> {
         return -1;
     }
 
-    private int getRealChildIndex(CellParent<VH> childParent, int position) {
+    private int getRealChildIndex(CellParent childParent, int position) {
 
         int prevChildCount = CellUtils.getCellCount(childParent.subList(0, position));
         if (childParent instanceof Cell) {
-            Cell<VH> cellChildParent = (Cell<VH>) childParent;
+            Cell cellChildParent = (Cell) childParent;
             int indexOfChild = getIndexOfChild(cellChildParent);
             if (indexOfChild < 0) {
                 return -1;

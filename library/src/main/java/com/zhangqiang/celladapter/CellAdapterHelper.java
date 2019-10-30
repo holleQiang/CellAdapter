@@ -5,25 +5,24 @@ import android.util.SparseIntArray;
 import android.view.ViewGroup;
 
 import com.zhangqiang.celladapter.cell.Cell;
-import com.zhangqiang.celladapter.cell.CellRoot;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 
-public class CellAdapterHelper<VH extends ViewHolder> {
+public class CellAdapterHelper {
 
 
-    private CellRoot<VH> cellRoot;
+    private CellRoot cellRoot;
 
-    public CellAdapterHelper(CellRoot<VH> cellParent) {
+    public CellAdapterHelper(CellRoot cellParent) {
         this.cellRoot = cellParent;
     }
 
     private SparseIntArray viewTypeDepends = new SparseIntArray();
 
-    public VH onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         int viewTypeDependOn = viewTypeDepends.get(viewType);
         int cellCount = cellRoot.getTotalCellCount();
         for (int i = 0; i < cellCount; i++) {
-            Cell<VH> cell = cellRoot.getCellAt(i);
+            Cell cell = cellRoot.getCellAt(i);
             if (cell.getViewType() == viewTypeDependOn) {
                 return cell.createViewHolder(viewGroup);
             }
@@ -31,12 +30,12 @@ public class CellAdapterHelper<VH extends ViewHolder> {
         throw new RuntimeException("cannot find getViewType " + viewTypeDependOn);
     }
 
-    public void onBindViewHolder(@NonNull VH rvViewHolder, int position) {
-        Cell<VH> cell = cellRoot.getCellAt(position);
+    public void onBindViewHolder(@NonNull ViewHolder rvViewHolder, int position) {
+        Cell cell = cellRoot.getCellAt(position);
         cell.bindViewHolder(rvViewHolder);
     }
 
-    public Cell<VH> getCellAt(int position) {
+    public Cell getCellAt(int position) {
         return cellRoot.getCellAt(position);
     }
 
@@ -45,7 +44,7 @@ public class CellAdapterHelper<VH extends ViewHolder> {
     }
 
     public int getItemViewType(int position) {
-        Cell<VH> cell = cellRoot.getCellAt(position);
+        Cell cell = cellRoot.getCellAt(position);
         int viewTypeDependOn = cell.getViewType();
         int viewType = viewTypeDepends.indexOfValue(viewTypeDependOn);
         if (viewType == -1) {

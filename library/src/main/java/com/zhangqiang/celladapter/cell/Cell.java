@@ -5,6 +5,7 @@ import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zhangqiang.celladapter.ParentSettingsObserver;
 import com.zhangqiang.celladapter.R;
 import com.zhangqiang.celladapter.observable.ObservableDataList;
 import com.zhangqiang.celladapter.vh.ViewHolder;
@@ -12,31 +13,31 @@ import com.zhangqiang.celladapter.vh.ViewHolder;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class Cell<VH extends ViewHolder> implements CellParent<VH> {
+public abstract class Cell implements CellParent {
 
     public static final int FULL_SPAN = -1;
     private int mSpanSize = 1;
-    private CellParent<VH> mParent;
-    private ObservableDataList<Cell<VH>> observableDataList = new ObservableDataList<>();
+    private CellParent mParent;
+    private ObservableDataList<Cell> observableDataList = new ObservableDataList<>();
 
     public Cell() {
-        observableDataList.addDataObserver(new ParentSettingsObserver<VH>(this){
+        observableDataList.addDataObserver(new ParentSettingsObserver(this){
 
             @Override
-            public <E extends Cell<VH>> void onDataChanged(int position, int count, @NonNull List<E> oldList, @NonNull List<E> newList) {
+            public <E extends Cell> void onDataChanged(int position, int count, @NonNull List<E> oldList, @NonNull List<E> newList) {
                 super.onDataChanged(position, count, oldList, newList);
                 handChildChangedInternal(position, count,oldList,newList);
             }
 
             @Override
-            public <E extends Cell<VH>> void onDataRemoved(int position, @NonNull List<E> removedList) {
+            public <E extends Cell> void onDataRemoved(int position, @NonNull List<E> removedList) {
                 super.onDataRemoved(position, removedList);
                 handChildRemovedInternal(position,removedList);
             }
 
 
             @Override
-            public <E extends Cell<VH>> void onDataAdded(int position, @NonNull List<E> addedList) {
+            public <E extends Cell> void onDataAdded(int position, @NonNull List<E> addedList) {
                 super.onDataAdded(position, addedList);
                 handChildAddedInternal(position,addedList);
             }
@@ -50,11 +51,11 @@ public abstract class Cell<VH extends ViewHolder> implements CellParent<VH> {
     }
 
 
-    public VH createViewHolder(ViewGroup viewGroup) {
+    public ViewHolder createViewHolder(ViewGroup viewGroup) {
         return onCreateViewHolder(viewGroup);
     }
 
-    protected abstract VH onCreateViewHolder(ViewGroup viewGroup);
+    protected abstract ViewHolder onCreateViewHolder(ViewGroup viewGroup);
 
     public abstract int getViewType();
 
@@ -66,7 +67,7 @@ public abstract class Cell<VH extends ViewHolder> implements CellParent<VH> {
         this.mSpanSize = spanSize;
     }
 
-    public void bindViewHolder(VH vh) {
+    public void bindViewHolder(ViewHolder vh) {
         View view = vh.getView();
         View.OnAttachStateChangeListener attachStateChangeListener = (View.OnAttachStateChangeListener) view.getTag(R.id.tag_key_attach_listener);
         if (attachStateChangeListener != null) {
@@ -92,13 +93,13 @@ public abstract class Cell<VH extends ViewHolder> implements CellParent<VH> {
         onBindViewHolder(vh);
     }
 
-    protected abstract void onBindViewHolder(VH vh);
+    protected abstract void onBindViewHolder(ViewHolder vh);
 
-    public CellParent<VH> getParent() {
+    public CellParent getParent() {
         return mParent;
     }
 
-    void setParent(CellParent<VH> parent) {
+    void setParent(CellParent parent) {
         if (mParent != null && parent != null) {
             throw new RuntimeException("cell : " + toString() + " has already has parent : " + mParent);
         }
@@ -106,32 +107,32 @@ public abstract class Cell<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public void addDataAtIndex(Cell<VH> data, int position) {
+    public void addDataAtIndex(Cell data, int position) {
         observableDataList.addDataAtIndex(data, position);
     }
 
     @Override
-    public <E extends Cell<VH>> void addDataListAtIndex(List<E> dataList, int position) {
+    public <E extends Cell> void addDataListAtIndex(List<E> dataList, int position) {
         observableDataList.addDataListAtIndex(dataList, position);
     }
 
     @Override
-    public void addDataAtLast(Cell<VH> data) {
+    public void addDataAtLast(Cell data) {
         observableDataList.addDataAtLast(data);
     }
 
     @Override
-    public void addDataAtFirst(Cell<VH> data) {
+    public void addDataAtFirst(Cell data) {
         observableDataList.addDataAtFirst(data);
     }
 
     @Override
-    public <E extends Cell<VH>> void addDataListAtLast(List<E> dataList) {
+    public <E extends Cell> void addDataListAtLast(List<E> dataList) {
         observableDataList.addDataListAtLast(dataList);
     }
 
     @Override
-    public <E extends Cell<VH>> void addDataListAtFirst(List<E> dataList) {
+    public <E extends Cell> void addDataListAtFirst(List<E> dataList) {
         observableDataList.addDataListAtFirst(dataList);
     }
 
@@ -141,7 +142,7 @@ public abstract class Cell<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public void removeData(Cell<VH> data) {
+    public void removeData(Cell data) {
         observableDataList.removeData(data);
     }
 
@@ -161,7 +162,7 @@ public abstract class Cell<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public int getDataIndex(Cell<VH> data) {
+    public int getDataIndex(Cell data) {
         return observableDataList.getDataIndex(data);
     }
 
@@ -171,7 +172,7 @@ public abstract class Cell<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public <E extends Cell<VH>> void setDataList(List<E> dataList) {
+    public <E extends Cell> void setDataList(List<E> dataList) {
         observableDataList.setDataList(dataList);
     }
 
@@ -181,7 +182,7 @@ public abstract class Cell<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public Cell<VH> getDataAt(int position) {
+    public Cell getDataAt(int position) {
         return observableDataList.getDataAt(position);
     }
 
@@ -191,85 +192,85 @@ public abstract class Cell<VH extends ViewHolder> implements CellParent<VH> {
     }
 
     @Override
-    public void replace(int position, Cell<VH> data) {
+    public void replace(int position, Cell data) {
         observableDataList.replace(position, data);
     }
 
 
     @Override
-    public <E extends Cell<VH>> void replace(int position, List<E> dataList) {
+    public <E extends Cell> void replace(int position, List<E> dataList) {
         observableDataList.replace(position, dataList);
     }
 
     @Override
-    public List<Cell<VH>> subList(int position, int count) {
+    public List<Cell> subList(int position, int count) {
         return observableDataList.subList(position, count);
     }
 
-    private <E extends Cell<VH>> void handChildChangedInternal(int position, int count, List<E> oldList, List<E> newList) {
-        CellParent<VH> parent = getParent();
+    private <E extends Cell> void handChildChangedInternal(int position, int count, List<E> oldList, List<E> newList) {
+        CellParent parent = getParent();
         if (parent != null) {
             parent.handChildChanged(this,position, count, oldList, newList);
         }
     }
 
-    private <E extends Cell<VH>> void handChildRemovedInternal(int position, List<E> removedList) {
-        CellParent<VH> parent = getParent();
+    private <E extends Cell> void handChildRemovedInternal(int position, List<E> removedList) {
+        CellParent parent = getParent();
         if (parent != null) {
             parent.handChildRemoved(this,position, removedList);
         }
     }
 
 
-    private <E extends Cell<VH>> void handChildAddedInternal(int position, List<E> addedList) {
+    private <E extends Cell> void handChildAddedInternal(int position, List<E> addedList) {
 
-        CellParent<VH> parent = getParent();
+        CellParent parent = getParent();
         if (parent != null) {
             parent.handChildAdded(this,position, addedList);
         }
     }
 
     private void handChildMovedInternal(int fromPosition, int toPosition) {
-        CellParent<VH> parent = getParent();
+        CellParent parent = getParent();
         if (parent != null) {
             parent.handChildMoved(this,fromPosition, toPosition);
         }
     }
 
     @Override
-    public <E extends Cell<VH>> void handChildChanged(CellParent<VH> childParent, int position, int count, List<E> oldList, List<E> newList) {
-        CellParent<VH> parent = getParent();
+    public <E extends Cell> void handChildChanged(CellParent childParent, int position, int count, List<E> oldList, List<E> newList) {
+        CellParent parent = getParent();
         if (parent != null) {
             parent.handChildChanged(childParent,position, count, oldList, newList);
         }
     }
 
     @Override
-    public <E extends Cell<VH>> void handChildAdded(CellParent<VH> childParent, int position, List<E> addedList) {
-        CellParent<VH> parent = getParent();
+    public <E extends Cell> void handChildAdded(CellParent childParent, int position, List<E> addedList) {
+        CellParent parent = getParent();
         if (parent != null) {
             parent.handChildAdded(childParent, position, addedList);
         }
     }
 
     @Override
-    public void handChildMoved(CellParent<VH> childParent, int fromPosition, int toPosition) {
-        CellParent<VH> parent = getParent();
+    public void handChildMoved(CellParent childParent, int fromPosition, int toPosition) {
+        CellParent parent = getParent();
         if (parent != null) {
             parent.handChildMoved(childParent, fromPosition, toPosition);
         }
     }
 
     @Override
-    public <E extends Cell<VH>> void handChildRemoved(CellParent<VH> childParent, int position, List<E> removedList) {
-        CellParent<VH> parent = getParent();
+    public <E extends Cell> void handChildRemoved(CellParent childParent, int position, List<E> removedList) {
+        CellParent parent = getParent();
         if (parent != null) {
             parent.handChildRemoved(childParent, position, removedList);
         }
     }
 
     public void invalidate(){
-        CellParent<VH> parent = getParent();
+        CellParent parent = getParent();
         if (parent == null) {
             return;
         }

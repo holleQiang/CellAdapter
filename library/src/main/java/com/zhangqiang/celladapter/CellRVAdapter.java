@@ -7,26 +7,25 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.ViewGroup;
 
 import com.zhangqiang.celladapter.cell.Cell;
-import com.zhangqiang.celladapter.cell.CellRoot;
 import com.zhangqiang.celladapter.observable.DataList;
-import com.zhangqiang.celladapter.vh.RVViewHolder;
+import com.zhangqiang.celladapter.vh.ViewHolder;
 
 import java.util.List;
 
-public class CellRVAdapter extends RecyclerView.Adapter<RVViewHolder> implements Adapter, DataList<Cell<RVViewHolder>> {
+public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements Adapter, DataList<Cell> {
 
-    private final CellRoot<RVViewHolder> cellRoot = new CellRoot<>(this);
-    private final DataList<Cell<RVViewHolder>> delegate = cellRoot;
-    private CellAdapterHelper<RVViewHolder> cellAdapterHelper = new CellAdapterHelper<>(cellRoot);
+    private final CellRoot cellRoot = new CellRoot(this);
+    private final DataList<Cell> delegate = cellRoot;
+    private CellAdapterHelper cellAdapterHelper = new CellAdapterHelper(cellRoot);
 
     @NonNull
     @Override
-    public RVViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         return cellAdapterHelper.onCreateViewHolder(viewGroup, viewType);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RVViewHolder rvViewHolder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder rvViewHolder, int position) {
         cellAdapterHelper.onBindViewHolder(rvViewHolder, position);
     }
 
@@ -35,7 +34,7 @@ public class CellRVAdapter extends RecyclerView.Adapter<RVViewHolder> implements
         return cellAdapterHelper.getItemCount();
     }
 
-    public Cell<RVViewHolder> getCellAt(int position) {
+    public Cell getCellAt(int position) {
         return cellAdapterHelper.getCellAt(position);
     }
 
@@ -45,7 +44,7 @@ public class CellRVAdapter extends RecyclerView.Adapter<RVViewHolder> implements
     }
 
     @Override
-    public void onViewAttachedToWindow(@NonNull RVViewHolder holder) {
+    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
 
         ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
@@ -53,7 +52,7 @@ public class CellRVAdapter extends RecyclerView.Adapter<RVViewHolder> implements
         if (lp instanceof StaggeredGridLayoutManager.LayoutParams) {
 
             int adapterPosition = holder.getAdapterPosition();
-            Cell<RVViewHolder> cell = cellAdapterHelper.getCellAt(adapterPosition);
+            Cell cell = cellAdapterHelper.getCellAt(adapterPosition);
             if (cell.getSpanSize() == Cell.FULL_SPAN) {
                 StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
                 if (!p.isFullSpan()) {
@@ -64,7 +63,7 @@ public class CellRVAdapter extends RecyclerView.Adapter<RVViewHolder> implements
     }
 
     @Override
-    public void onViewDetachedFromWindow(@NonNull RVViewHolder holder) {
+    public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
     }
 
@@ -96,32 +95,32 @@ public class CellRVAdapter extends RecyclerView.Adapter<RVViewHolder> implements
     }
 
     @Override
-    public void addDataAtIndex(Cell<RVViewHolder> data, int position) {
+    public void addDataAtIndex(Cell data, int position) {
         delegate.addDataAtIndex(data, position);
     }
 
     @Override
-    public <E extends Cell<RVViewHolder>> void addDataListAtIndex(List<E> dataList, int position) {
+    public <E extends Cell> void addDataListAtIndex(List<E> dataList, int position) {
         delegate.addDataListAtIndex(dataList, position);
     }
 
     @Override
-    public void addDataAtLast(Cell<RVViewHolder> data) {
+    public void addDataAtLast(Cell data) {
         delegate.addDataAtLast(data);
     }
 
     @Override
-    public void addDataAtFirst(Cell<RVViewHolder> data) {
+    public void addDataAtFirst(Cell data) {
         delegate.addDataAtFirst(data);
     }
 
     @Override
-    public <E extends Cell<RVViewHolder>> void addDataListAtLast(List<E> dataList) {
+    public <E extends Cell> void addDataListAtLast(List<E> dataList) {
         delegate.addDataListAtLast(dataList);
     }
 
     @Override
-    public <E extends Cell<RVViewHolder>> void addDataListAtFirst(List<E> dataList) {
+    public <E extends Cell> void addDataListAtFirst(List<E> dataList) {
         delegate.addDataListAtFirst(dataList);
     }
 
@@ -131,7 +130,7 @@ public class CellRVAdapter extends RecyclerView.Adapter<RVViewHolder> implements
     }
 
     @Override
-    public void removeData(Cell<RVViewHolder> data) {
+    public void removeData(Cell data) {
         delegate.removeData(data);
     }
 
@@ -151,7 +150,7 @@ public class CellRVAdapter extends RecyclerView.Adapter<RVViewHolder> implements
     }
 
     @Override
-    public int getDataIndex(Cell<RVViewHolder> data) {
+    public int getDataIndex(Cell data) {
         return delegate.getDataIndex(data);
     }
 
@@ -161,7 +160,7 @@ public class CellRVAdapter extends RecyclerView.Adapter<RVViewHolder> implements
     }
 
     @Override
-    public <E extends Cell<RVViewHolder>> void setDataList(List<E> dataList) {
+    public <E extends Cell> void setDataList(List<E> dataList) {
         delegate.setDataList(dataList);
     }
 
@@ -171,7 +170,7 @@ public class CellRVAdapter extends RecyclerView.Adapter<RVViewHolder> implements
     }
 
     @Override
-    public Cell<RVViewHolder> getDataAt(int position) {
+    public Cell getDataAt(int position) {
         return delegate.getDataAt(position);
     }
 
@@ -181,17 +180,17 @@ public class CellRVAdapter extends RecyclerView.Adapter<RVViewHolder> implements
     }
 
     @Override
-    public void replace(int position, Cell<RVViewHolder> data) {
+    public void replace(int position, Cell data) {
         delegate.replace(position, data);
     }
 
     @Override
-    public <E extends Cell<RVViewHolder>> void replace(int position, List<E> dataList) {
+    public <E extends Cell> void replace(int position, List<E> dataList) {
         delegate.replace(position, dataList);
     }
 
     @Override
-    public List<Cell<RVViewHolder>> subList(int position, int count) {
+    public List<Cell> subList(int position, int count) {
         return delegate.subList(position, count);
     }
 }

@@ -1,106 +1,373 @@
 package com.zhangqiang.celladapter.vh;
 
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextWatcher;
 import android.text.method.MovementMethod;
+import android.text.util.Linkify;
+import android.util.SparseArray;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.Checkable;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
-public interface ViewHolder {
+public final class ViewHolder extends RecyclerView.ViewHolder{
 
-    <T extends View> T getView(@IdRes int viewId);
+    private final SparseArray<View> views = new SparseArray<>();
 
-    View getView();
+    private View contentView;
 
-    ViewHolder setText(@IdRes int viewId, CharSequence charSequence) ;
+    public static ViewHolder create(ViewGroup viewGroup, int layoutId){
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(layoutId, viewGroup, false);
+        return new ViewHolder(view);
+    }
 
-    ViewHolder setImageResource(@IdRes int viewId, int imageResource);
+    public ViewHolder(View contentView) {
+        super(contentView);
+        this.contentView = contentView;
+    }
 
-    ViewHolder setImageBitmap(@IdRes int viewId, Bitmap bitmap);
+    @SuppressWarnings("unchecked")
+    public <T extends View> T getView(int viewId) {
 
-    ViewHolder setImageDrawable(@IdRes int viewId, Drawable drawable);
+        View view = views.get(viewId);
 
-    ViewHolder setBackgroundColor(@IdRes int viewId, int color);
+        if (view == null) {
 
-    ViewHolder setBackgroundRes(@IdRes int viewId, int backgroundRes);
+            view = getView().findViewById(viewId);
+            if (view != null) {
 
-    ViewHolder setTextColor(@IdRes int viewId, int textColor);
+                views.put(viewId, view);
+            }
+        }
+        return (T) view;
+    }
 
-    ViewHolder setTextColorRes(@IdRes int viewId, int textColorRes);
+   
+    public View getView() {
+        return contentView;
+    }
 
-    ViewHolder setAlpha(@IdRes int viewId, float value);
+   
+    public ViewHolder setText(int viewId, CharSequence charSequence) {
 
-    ViewHolder setVisible(@IdRes int viewId, boolean visible);
+        TextView textView = getView(viewId);
+        textView.setText(charSequence);
+        return this;
+    }
 
-    ViewHolder setVisibility(@IdRes int viewId, int visible);
+   
+    public ViewHolder setImageResource(int viewId, int imageResource) {
 
-    ViewHolder addLinks(@IdRes int viewId, int mask);
+        ImageView imageView = getView(viewId);
+        imageView.setImageResource(imageResource);
+        return this;
+    }
 
-    ViewHolder setTypeface(Typeface typeface, int... viewIds);
+   
+    public ViewHolder setImageBitmap(int viewId, Bitmap bitmap) {
+        ImageView view = getView(viewId);
+        view.setImageBitmap(bitmap);
+        return this;
+    }
 
-    ViewHolder setProgress(@IdRes int viewId, int progress);
+   
+    public ViewHolder setImageDrawable(int viewId, Drawable drawable) {
+        ImageView view = getView(viewId);
+        view.setImageDrawable(drawable);
+        return this;
+    }
 
-    ViewHolder setProgress(@IdRes int viewId, int progress, int max);
+   
+    public ViewHolder setBackgroundColor(int viewId, int color) {
+        View view = getView(viewId);
+        view.setBackgroundColor(color);
+        return this;
+    }
 
-    ViewHolder setMax(@IdRes int viewId, int max);
+    public ViewHolder setBackgroundRes(int viewId, int backgroundRes) {
+        View view = getView(viewId);
+        view.setBackgroundResource(backgroundRes);
+        return this;
+    }
 
-    ViewHolder setRating(@IdRes int viewId, float rating);
+   
+    public ViewHolder setTextColor(int viewId, int textColor) {
+        TextView view = getView(viewId);
+        view.setTextColor(textColor);
+        return this;
+    }
 
-    ViewHolder setRating(@IdRes int viewId, float rating, int max);
+   
+    public ViewHolder setTextColorRes(int viewId, int textColorRes) {
+        TextView view = getView(viewId);
+        view.setTextColor(view.getResources().getColor(textColorRes));
+        return this;
+    }
 
-    ViewHolder setTag(@IdRes int viewId, Object tag) ;
+   
+    public ViewHolder setAlpha(int viewId, float value) {
 
-    ViewHolder setTag(@IdRes int viewId, int key, Object tag) ;
+        getView(viewId).setAlpha(value);
+        return this;
+    }
 
-    ViewHolder setChecked(@IdRes int viewId, boolean checked);
+   
+    public ViewHolder setVisible(int viewId, boolean visible) {
+        View view = getView(viewId);
+        view.setVisibility(visible ? View.VISIBLE : View.GONE);
+        return this;
+    }
+
+   
+    public ViewHolder setVisibility(int viewId, int visible) {
+        View view = getView(viewId);
+        view.setVisibility(visible);
+        return this;
+    }
+
+   
+    public ViewHolder addLinks(int viewId, int mask) {
+        TextView view = getView(viewId);
+//        Linkify.addLinks(view, Linkify.ALL);
+        Linkify.addLinks(view, mask);
+        return this;
+    }
+
+   
+    public ViewHolder setTypeface(Typeface typeface, int... viewIds) {
+        for (int viewId : viewIds) {
+            TextView view = getView(viewId);
+            view.setTypeface(typeface);
+            view.setPaintFlags(view.getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);
+        }
+        return this;
+    }
+
+   
+    public ViewHolder setProgress(int viewId, int progress) {
+        ProgressBar view = getView(viewId);
+        view.setProgress(progress);
+        return this;
+    }
+
+   
+    public ViewHolder setProgress(int viewId, int progress, int max) {
+        ProgressBar view = getView(viewId);
+        view.setMax(max);
+        view.setProgress(progress);
+        return this;
+    }
+
+   
+    public ViewHolder setMax(int viewId, int max) {
+        ProgressBar view = getView(viewId);
+        view.setMax(max);
+        return this;
+    }
+
+   
+    public ViewHolder setRating(int viewId, float rating) {
+        RatingBar view = getView(viewId);
+        view.setRating(rating);
+        return this;
+    }
+
+   
+    public ViewHolder setRating(int viewId, float rating, int max) {
+        RatingBar view = getView(viewId);
+        view.setMax(max);
+        view.setRating(rating);
+        return this;
+    }
+
+   
+    public ViewHolder setTag(int viewId, Object tag) {
+        View view = getView(viewId);
+        view.setTag(tag);
+        return this;
+    }
+
+   
+    public ViewHolder setTag(int viewId, int key, Object tag) {
+        View view = getView(viewId);
+        view.setTag(key, tag);
+        return this;
+    }
+
+   
+    public ViewHolder setChecked(int viewId, boolean checked) {
+        Checkable view = getView(viewId);
+        view.setChecked(checked);
+        return this;
+    }
 
     /**
      * 关于事件的
      */
-    ViewHolder setOnClickListener(@IdRes int viewId, View.OnClickListener listener);
+   
+    public ViewHolder setOnClickListener(int viewId, View.OnClickListener listener) {
+        View view = getView(viewId);
+        view.setOnClickListener(listener);
+        return this;
+    }
 
-    ViewHolder setOnTouchListener(@IdRes int viewId, View.OnTouchListener listener);
+   
+    public ViewHolder setOnTouchListener(int viewId, View.OnTouchListener listener) {
+        View view = getView(viewId);
+        view.setOnTouchListener(listener);
+        return this;
+    }
 
-    ViewHolder setOnLongClickListener(@IdRes int viewId, View.OnLongClickListener listener);
+   
+    public ViewHolder setOnLongClickListener(int viewId, View.OnLongClickListener listener) {
+        View view = getView(viewId);
+        view.setOnLongClickListener(listener);
+        return this;
+    }
 
-    ViewHolder setAdapter(@IdRes int viewId, Adapter adapter);
+   
+    public ViewHolder setAdapter(int viewId, Adapter adapter){
 
-    ViewHolder setOnItemClickListener(@IdRes int viewId, AdapterView.OnItemClickListener itemClickListener);
+        AdapterView<Adapter> adapterView = getView(viewId);
+        adapterView.setAdapter(adapter);
+        return this;
+    }
 
-    ViewHolder setCompoundDrawablePadding(@IdRes int viewId, int pad);
+   
+    public ViewHolder setOnItemClickListener(int viewId, AdapterView.OnItemClickListener itemClickListener){
 
-    ViewHolder setCompoundDrawablesWithIntrinsicBounds(@IdRes int viewId, Drawable left, Drawable top, Drawable right, Drawable bottom);
+        AdapterView<Adapter> adapterView = getView(viewId);
+        adapterView.setOnItemClickListener(itemClickListener);
+        return this;
+    }
 
-    ViewHolder setOnCheckedChangeListener(@IdRes int viewId, CompoundButton.OnCheckedChangeListener onCheckedChangeListener);
+   
+    public ViewHolder setCompoundDrawablePadding(int viewId, int pad){
 
-    ViewHolder setBackgroundResource(@IdRes int viewId, int resId);
+        TextView textView = getView(viewId);
+        textView.setCompoundDrawablePadding(pad);
+        return this;
+    }
 
-    ViewHolder addTextChangedListener(@IdRes int viewId, TextWatcher textWatcher);
+   
+    public ViewHolder setCompoundDrawablesWithIntrinsicBounds(int viewId, Drawable left, Drawable top, Drawable right, Drawable bottom) {
 
-    ViewHolder setMovementMethod(@IdRes int viewId, MovementMethod movement);
+        TextView textView = getView(viewId);
+        textView.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom);
+        return this;
+    }
 
-    ViewHolder setEnable(@IdRes int viewId, boolean enable);
+   
+    public ViewHolder setOnCheckedChangeListener(int viewId, CompoundButton.OnCheckedChangeListener onCheckedChangeListener){
 
-    int getVisibility(@IdRes int viewId);
+        CompoundButton checkBox = getView(viewId);
+        checkBox.setOnCheckedChangeListener(onCheckedChangeListener);
+        return this;
+    }
 
-    ViewHolder setLayoutParams(@IdRes int viewId, ViewGroup.LayoutParams layoutParams) ;
+   
+    public ViewHolder setBackgroundResource(int viewId, int resId) {
 
-    ViewHolder setOnItemLongClickListener(@IdRes int viewId, AdapterView.OnItemLongClickListener onItemLongClickListener);
+        View v = getView(viewId);
+        v.setBackgroundResource(resId);
+        return this;
+    }
 
-    ViewHolder removeAllViews(@IdRes int viewId);
+   
+    public ViewHolder addTextChangedListener(int viewId, TextWatcher textWatcher) {
 
-    ViewHolder addView(@IdRes int viewId, View childView);
+        EditText v = getView(viewId);
+        v.addTextChangedListener(textWatcher);
+        return this;
+    }
 
-    ViewHolder setTextSize(@IdRes int viewId, int unit, float textSize);
+   
+    public ViewHolder setMovementMethod(int viewId, MovementMethod movement) {
 
-    ViewHolder setTextSize(@IdRes int viewId, float textSize);
+        TextView textView = getView(viewId);
+        textView.setMovementMethod(movement);
+        return this;
+    }
 
-    ViewHolder setText(@IdRes int viewId, @StringRes int textRes);
+   
+    public ViewHolder setEnable(int viewId, boolean enable) {
+
+        getView(viewId).setEnabled(enable);
+        return this;
+    }
+
+   
+    public int getVisibility(int viewId) {
+
+        return getView(viewId).getVisibility();
+    }
+
+   
+    public ViewHolder setLayoutParams(int viewId, ViewGroup.LayoutParams layoutParams) {
+
+        getView(viewId).setLayoutParams(layoutParams);
+        return this;
+    }
+
+   
+    public ViewHolder setOnItemLongClickListener(int viewId, AdapterView.OnItemLongClickListener onItemLongClickListener) {
+
+        AdapterView adapterView = getView(viewId);
+        adapterView.setOnItemLongClickListener(onItemLongClickListener);
+        return this;
+    }
+
+   
+    public ViewHolder removeAllViews(int viewId) {
+
+        ViewGroup viewGroup = getView(viewId);
+        viewGroup.removeAllViews();
+        return this;
+    }
+
+   
+    public ViewHolder addView(int viewId, View childView) {
+
+        ViewGroup viewGroup = getView(viewId);
+        viewGroup.addView(childView);
+        return this;
+    }
+
+   
+    public ViewHolder setTextSize(int viewId, int unit, float textSize) {
+
+        TextView textView = getView(viewId);
+        textView.setTextSize(unit,textSize);
+        return this;
+    }
+
+   
+    public ViewHolder setTextSize(int viewId, float textSize) {
+
+        TextView textView = getView(viewId);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,textSize);
+        return this;
+    }
+
+   
+    public ViewHolder setText(int viewId, @StringRes int text) {
+
+        TextView textView = getView(viewId);
+        textView.setText(text);
+        return this;
+    }
 }

@@ -6,18 +6,16 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.zhangqiang.celladapter.cell.Cell;
-import com.zhangqiang.celladapter.cell.CellRoot;
 import com.zhangqiang.celladapter.observable.DataList;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 public class CellListAdapter extends BaseAdapter implements Adapter, DataList<Cell> {
 
     private final CellRoot cellRoot = new CellRoot(this);
     private final DataList<Cell> delegate = cellRoot;
-    private CellAdapterHelper<ViewHolder> cellAdapterHelper = new CellAdapterHelper<>(cellRoot);
+    private CellAdapterHelper cellAdapterHelper = new CellAdapterHelper(cellRoot);
 
     @Override
     public int getCount() {

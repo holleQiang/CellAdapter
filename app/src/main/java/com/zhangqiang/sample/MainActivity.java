@@ -4,14 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ListView;
-import android.widget.RadioButton;
 
 import com.zhangqiang.celladapter.CellListAdapter;
 import com.zhangqiang.celladapter.CellRVAdapter;
@@ -19,12 +16,10 @@ import com.zhangqiang.celladapter.cell.Cell;
 import com.zhangqiang.celladapter.cell.CellParent;
 import com.zhangqiang.celladapter.cell.ViewHolderBinder;
 import com.zhangqiang.celladapter.cell.MultiCell;
-import com.zhangqiang.celladapter.vh.RVViewHolder;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(cellRVAdapter);
 
-        List<Cell<RVViewHolder>> dataList = new ArrayList<>();
+        List<Cell> dataList = new ArrayList<>();
         dataList.add(newAddCell("1"));
         dataList.add(newAddCell("2"));
         dataList.add(newAddCell("3"));
@@ -80,9 +75,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
-                Cell<RVViewHolder> fromCell = cellRVAdapter.getCellAt(viewHolder.getAdapterPosition());
-                Cell<RVViewHolder> toCell = cellRVAdapter.getCellAt(viewHolder1.getAdapterPosition());
-                CellParent<RVViewHolder> fromCellParent = fromCell.getParent();
+                Cell fromCell = cellRVAdapter.getCellAt(viewHolder.getAdapterPosition());
+                Cell toCell = cellRVAdapter.getCellAt(viewHolder1.getAdapterPosition());
+                CellParent fromCellParent = fromCell.getParent();
                 if (fromCellParent != null && fromCellParent == toCell.getParent()) {
 
                     int fromPosition = fromCellParent.getDataIndex(fromCell);
@@ -116,17 +111,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private Cell<RVViewHolder> newAddCell(final String text) {
+    private Cell newAddCell(final String text) {
 
         final MultiCell<String> multiCell = new MultiCell<>(R.layout.item_test_add, text, null);
 
-        multiCell.setViewHolderBinder(new ViewHolderBinder<RVViewHolder, String>() {
+        multiCell.setViewHolderBinder(new ViewHolderBinder<String>() {
             @Override
-            public void onBind(RVViewHolder viewHolder, final String s) {
+            public void onBind(ViewHolder viewHolder, final String s) {
                 viewHolder.setOnClickListener(R.id.bt_add, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Cell<RVViewHolder> data = newAddCell(s);
+                        Cell data = newAddCell(s);
                         multiCell.addDataAtLast(data);
                     }
                 });
@@ -134,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 viewHolder.setOnClickListener(R.id.bt_delete, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        CellParent<RVViewHolder> parent = multiCell.getParent();
+                        CellParent parent = multiCell.getParent();
                         if (parent != null) {
                             parent.removeData(multiCell);
                         }

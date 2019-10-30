@@ -2,23 +2,23 @@ package com.zhangqiang.celladapter.cell;
 
 import android.view.ViewGroup;
 
-import com.zhangqiang.celladapter.vh.RVViewHolder;
+import com.zhangqiang.celladapter.vh.ViewHolder;
 
-public class MultiCell<T> extends Cell<RVViewHolder> {
+public class MultiCell<T> extends Cell {
 
     private int layoutId;
     private T data;
-    private ViewHolderBinder<RVViewHolder,T> viewHolderBinder;
+    private ViewHolderBinder<T> viewHolderBinder;
 
-    public MultiCell(int layoutId, T data, ViewHolderBinder<RVViewHolder,T> viewHolderBinder) {
+    public MultiCell(int layoutId, T data, ViewHolderBinder<T> viewHolderBinder) {
         this.layoutId = layoutId;
         this.data = data;
         this.viewHolderBinder = viewHolderBinder;
     }
 
     @Override
-    protected RVViewHolder onCreateViewHolder(ViewGroup viewGroup) {
-        return RVViewHolder.create(viewGroup,layoutId);
+    protected ViewHolder onCreateViewHolder(ViewGroup viewGroup) {
+        return ViewHolder.create(viewGroup,layoutId);
     }
 
     @Override
@@ -27,13 +27,13 @@ public class MultiCell<T> extends Cell<RVViewHolder> {
     }
 
     @Override
-    protected void onBindViewHolder(RVViewHolder vh) {
+    protected void onBindViewHolder(ViewHolder vh) {
         if (data!= null && viewHolderBinder != null) {
             viewHolderBinder.onBind(vh,data);
         }
     }
 
-    public void setViewHolderBinder(ViewHolderBinder<RVViewHolder,T> viewHolderBinder) {
+    public void setViewHolderBinder(ViewHolderBinder<T> viewHolderBinder) {
         this.viewHolderBinder = viewHolderBinder;
     }
 

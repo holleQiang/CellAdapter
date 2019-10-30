@@ -1,17 +1,16 @@
 package com.zhangqiang.celladapter.cell;
 
 import com.zhangqiang.celladapter.observable.DataList;
-import com.zhangqiang.celladapter.vh.ViewHolder;
 
 import java.util.List;
 
-public interface CellParent<VH extends ViewHolder> extends DataList<Cell<VH>> {
+public interface CellParent extends DataList<Cell> {
 
-    <E extends Cell<VH>> void handChildChanged(CellParent<VH> childParent, int position, int count, List<E> oldList, List<E> newList);
+    <E extends Cell> void handChildChanged(CellParent childParent, int position, int count, List<E> oldList, List<E> newList);
 
-    void handChildMoved(CellParent<VH> childParent, int fromPosition, int toPosition);
+    void handChildMoved(CellParent childParent, int fromPosition, int toPosition);
 
-    <E extends Cell<VH>> void handChildAdded(CellParent<VH> childParent, int position, List<E> addedList);
+    <E extends Cell> void handChildAdded(CellParent childParent, int position, List<E> addedList);
 
-    <E extends Cell<VH>> void handChildRemoved(CellParent<VH> childParent, int position, List<E> removedList);
+    <E extends Cell> void handChildRemoved(CellParent childParent, int position, List<E> removedList);
 }

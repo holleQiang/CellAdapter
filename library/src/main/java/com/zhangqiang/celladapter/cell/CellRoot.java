@@ -58,7 +58,7 @@ public final class CellRoot implements CellParent {
     @Override
     public <E extends Cell> void handChildChanged(CellParent childParent, int position, int count, @NonNull List<E> oldList,@NonNull  List<E> newList) {
 
-        if (oldList.size() != newList.size()) {
+        if (oldList.size() != newList.size() || count == oldList.size()) {
             mAdapter.notifyDataSetChanged();
             return;
         }

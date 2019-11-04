@@ -15,14 +15,14 @@ final class ParentSettingsObserver implements DataObserver<Cell> {
     }
 
     @Override
-    public <E extends Cell> void onDataChanged(int position, int count, @NonNull List<E> oldList, @NonNull List<E> newList) {
+    public <E extends Cell> void onDataChanged(int position, @NonNull List<E> oldList, @NonNull List<E> newList) {
         for (int i = 0; i < oldList.size(); i++) {
             oldList.get(i).setParent(null);
         }
         for (int i = 0; i < newList.size(); i++) {
             newList.get(i).setParent(mParent);
         }
-        handChildChangedInternal(position, count, oldList, newList);
+        handChildChangedInternal(position, oldList, newList);
     }
 
     @Override
@@ -47,10 +47,10 @@ final class ParentSettingsObserver implements DataObserver<Cell> {
     }
 
 
-    private <E extends Cell> void handChildChangedInternal(int position, int count, List<E> oldList, List<E> newList) {
+    private <E extends Cell> void handChildChangedInternal(int position, List<E> oldList, List<E> newList) {
         CellParent parent = mParent.getParent();
         if (parent != null) {
-            parent.handChildChanged(mParent, position, count, oldList, newList);
+            parent.handChildChanged(mParent, position, oldList, newList);
         }
     }
 

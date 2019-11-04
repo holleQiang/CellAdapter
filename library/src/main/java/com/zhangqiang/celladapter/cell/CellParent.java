@@ -10,7 +10,7 @@ public interface CellParent extends DataList<Cell> {
 
     CellParent getParent();
 
-    <E extends Cell> void handChildChanged(CellParent childParent, int position, int count, @NonNull List<E> oldList,@NonNull List<E> newList);
+    <E extends Cell> void handChildChanged(CellParent childParent, int position, @NonNull List<E> oldList,@NonNull List<E> newList);
 
     void handChildMoved(CellParent childParent, int fromPosition, int toPosition);
 

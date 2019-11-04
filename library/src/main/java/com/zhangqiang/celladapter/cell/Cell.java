@@ -184,10 +184,10 @@ public abstract class Cell implements CellParent {
 
 
     @Override
-    public <E extends Cell> void handChildChanged(CellParent childParent, int position, int count, @NonNull List<E> oldList, @NonNull List<E> newList) {
+    public <E extends Cell> void handChildChanged(CellParent childParent, int position, @NonNull List<E> oldList, @NonNull List<E> newList) {
         CellParent parent = getParent();
         if (parent != null) {
-            parent.handChildChanged(childParent,position, count, oldList, newList);
+            parent.handChildChanged(childParent,position, oldList, newList);
         }
     }
 
@@ -220,6 +220,6 @@ public abstract class Cell implements CellParent {
         if (parent == null) {
             return;
         }
-        parent.handChildChanged(parent,parent.getDataIndex(this),parent.getDataCount(), Collections.singletonList(this),Collections.singletonList(this));
+        parent.handChildChanged(parent,parent.getDataIndex(this), Collections.singletonList(this),Collections.singletonList(this));
     }
 }

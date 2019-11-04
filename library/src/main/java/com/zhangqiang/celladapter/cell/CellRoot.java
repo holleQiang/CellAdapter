@@ -11,6 +11,7 @@ public final class CellRoot implements CellParent {
 
     private final ObservableDataList<Cell> dataObserver = new ObservableDataList<>();
     private Adapter mAdapter;
+    private int cellCount;
 
     public CellRoot(Adapter adapter) {
         this.mAdapter = adapter;
@@ -18,14 +19,7 @@ public final class CellRoot implements CellParent {
     }
 
     public int getTotalCellCount() {
-        int count = 0;
-        int dataCount = getDataCount();
-        for (int i = 0; i < dataCount; i++) {
-            count++;
-            Cell data = getDataAt(i);
-            count += CellUtils.getChildCount(data);
-        }
-        return count;
+        return cellCount;
     }
 
     public Cell getCellAt(int index) {
@@ -56,9 +50,10 @@ public final class CellRoot implements CellParent {
     }
 
     @Override
-    public <E extends Cell> void handChildChanged(CellParent childParent, int position, int count, @NonNull List<E> oldList,@NonNull  List<E> newList) {
-
-        if (oldList.size() != newList.size() || count == oldList.size()) {
+    public <E extends Cell> void handChildChanged(CellParent childParent, int position, @NonNull List<E> oldList, @NonNull List<E> newList) {
+        final int oldCellCount = cellCount;
+        cellCount = computeTotalCellCount();
+        if (oldCellCount != cellCount) {
             mAdapter.notifyDataSetChanged();
             return;
         }
@@ -71,8 +66,8 @@ public final class CellRoot implements CellParent {
 
 
     @Override
-    public <E extends Cell> void handChildRemoved(CellParent childParent, int position,@NonNull  List<E> removedList) {
-
+    public <E extends Cell> void handChildRemoved(CellParent childParent, int position, @NonNull List<E> removedList) {
+        cellCount = computeTotalCellCount();
         int index = getRealChildIndex(childParent, position);
         if (index < 0) {
             return;
@@ -102,8 +97,8 @@ public final class CellRoot implements CellParent {
     }
 
     @Override
-    public <E extends Cell> void handChildAdded(CellParent childParent, int position,@NonNull  List<E> addedList) {
-
+    public <E extends Cell> void handChildAdded(CellParent childParent, int position, @NonNull List<E> addedList) {
+        cellCount = computeTotalCellCount();
         int index = getRealChildIndex(childParent, position);
         if (index < 0) {
             return;
@@ -238,5 +233,17 @@ public final class CellRoot implements CellParent {
             return prevChildCount;
         }
         throw new IllegalArgumentException("illegal childParent" + childParent);
+    }
+
+    private int computeTotalCellCount() {
+
+        int count = 0;
+        int dataCount = getDataCount();
+        for (int i = 0; i < dataCount; i++) {
+            count++;
+            Cell data = getDataAt(i);
+            count += CellUtils.getChildCount(data);
+        }
+        return count;
     }
 }

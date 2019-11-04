@@ -1,5 +1,6 @@
 package com.zhangqiang.sample;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import com.zhangqiang.celladapter.cell.Cell;
 import com.zhangqiang.celladapter.cell.CellParent;
 import com.zhangqiang.celladapter.cell.ViewHolderBinder;
 import com.zhangqiang.celladapter.cell.MultiCell;
+import com.zhangqiang.celladapter.cell.expand.ExpandHelper;
+import com.zhangqiang.celladapter.cell.expand.OnExpandStateChangedListener;
 import com.zhangqiang.celladapter.drag.CellDragHelper;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 
@@ -37,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(cellRVAdapter);
 
-        List<Cell> dataList = new ArrayList<>();
+        final List<Cell> dataList = new ArrayList<>();
         dataList.add(newAddCell("1"));
         dataList.add(newAddCell("2"));
         dataList.add(newAddCell("3"));
@@ -45,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
         dataList.add(newAddCell("5"));
 
         cellRVAdapter.setDataList(dataList);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                cellRVAdapter.setDataList(dataList);
+            }
+        }, 2000);
 
         final CompoundButton btExchange = findViewById(R.id.bt_exchange);
         final ListView listView = findViewById(R.id.mListView);
@@ -60,13 +70,13 @@ public class MainActivity extends AppCompatActivity {
         listener.onCheckedChanged(btExchange, btExchange.isChecked());
         final CellListAdapter cellListAdapter = new CellListAdapter();
 
-        dataList = new ArrayList<>();
-        dataList.add(newAddCell("1"));
-        dataList.add(newAddCell("2"));
-        dataList.add(newAddCell("3"));
-        dataList.add(newAddCell("4"));
-        dataList.add(newAddCell("5"));
-        cellListAdapter.setDataList(dataList);
+        List<Cell> dataList2 = new ArrayList<>();
+        dataList2.add(newAddCell("1"));
+        dataList2.add(newAddCell("2"));
+        dataList2.add(newAddCell("3"));
+        dataList2.add(newAddCell("4"));
+        dataList2.add(newAddCell("5"));
+        cellListAdapter.setDataList(dataList2);
         listView.setAdapter(cellListAdapter);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new CellDragHelper(cellRVAdapter) {
@@ -87,10 +97,24 @@ public class MainActivity extends AppCompatActivity {
     private Cell newAddCell(final String text) {
 
         final MultiCell<String> multiCell = new MultiCell<>(R.layout.item_test_add, text, null);
-
+        multiCell.setSpanSize(Cell.FULL_SPAN);
+        final ExpandHelper expandHelper = new ExpandHelper(multiCell);
         multiCell.setViewHolderBinder(new ViewHolderBinder<String>() {
             @Override
             public void onBind(ViewHolder viewHolder, final String s) {
+                viewHolder.setText(R.id.bt_expand, expandHelper.isExpand() ? "收起" : "展开");
+                viewHolder.setOnClickListener(R.id.bt_expand, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        expandHelper.toggleExpand();
+                    }
+                });
+                expandHelper.setOnExpandStateChangedListener(new OnExpandStateChangedListener() {
+                    @Override
+                    public void onExpandStateChanged(boolean expand) {
+                        multiCell.invalidate();
+                    }
+                });
                 viewHolder.setOnClickListener(R.id.bt_add, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

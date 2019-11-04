@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface DataObserver<T> {
 
-    <E extends T> void onDataChanged(int position,int count,@NonNull List<E> oldList,@NonNull List<E> newList);
+    <E extends T> void onDataChanged(int position,@NonNull List<E> oldList,@NonNull List<E> newList);
 
     <E extends T> void onDataAdded(int position, @NonNull List<E> addedList);
 

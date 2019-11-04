@@ -18,7 +18,7 @@ public class MultiCell<T> extends Cell {
 
     @Override
     protected ViewHolder onCreateViewHolder(ViewGroup viewGroup) {
-        return ViewHolder.create(viewGroup,layoutId);
+        return ViewHolder.create(viewGroup, layoutId);
     }
 
     @Override
@@ -28,8 +28,8 @@ public class MultiCell<T> extends Cell {
 
     @Override
     protected void onBindViewHolder(ViewHolder vh) {
-        if (data!= null && viewHolderBinder != null) {
-            viewHolderBinder.onBind(vh,data);
+        if (data != null && viewHolderBinder != null) {
+            viewHolderBinder.onBind(vh, data);
         }
     }
 
@@ -41,4 +41,6 @@ public class MultiCell<T> extends Cell {
         this.data = data;
         invalidate();
     }
+
+
 }

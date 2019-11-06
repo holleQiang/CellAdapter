@@ -42,5 +42,11 @@ public class MultiCell<T> extends Cell {
         invalidate();
     }
 
+    public int getLayoutId() {
+        return layoutId;
+    }
 
+    public T getData() {
+        return data;
+    }
 }

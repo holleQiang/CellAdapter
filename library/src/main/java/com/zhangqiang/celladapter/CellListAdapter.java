@@ -49,27 +49,7 @@ public class CellListAdapter extends BaseAdapter implements Adapter, DataList<Ce
     }
 
     @Override
-    public void notifyItemChanged(int position) {
-        this.notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyItemChanged(int position, @Nullable Object payload) {
-        this.notifyDataSetChanged();
-    }
-
-    @Override
     public void notifyItemRangeChanged(int positionStart, int itemCount) {
-        this.notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyItemRangeChanged(int positionStart, int itemCount, @Nullable Object payload) {
-        this.notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyItemInserted(int position) {
         this.notifyDataSetChanged();
     }
 
@@ -80,11 +60,6 @@ public class CellListAdapter extends BaseAdapter implements Adapter, DataList<Ce
 
     @Override
     public void notifyItemRangeInserted(int positionStart, int itemCount) {
-        this.notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyItemRemoved(int position) {
         this.notifyDataSetChanged();
     }
 

@@ -13,9 +13,9 @@ import com.zhangqiang.celladapter.vh.ViewHolder;
 
 import java.util.List;
 
-public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements Adapter, DataList<Cell> {
+public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements DataList<Cell> {
 
-    private final CellRoot cellRoot = new CellRoot(this);
+    private final CellRoot cellRoot = new CellRoot(new RVAdapter(this));
     private final DataList<Cell> delegate = cellRoot;
     private CellAdapterHelper cellAdapterHelper = new CellAdapterHelper(cellRoot);
 
@@ -193,5 +193,49 @@ public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements A
     @Override
     public List<Cell> subList(int position, int count) {
         return delegate.subList(position, count);
+    }
+
+
+    private static class RVAdapter implements Adapter {
+
+        private RecyclerView.Adapter adapter;
+
+        public RVAdapter(RecyclerView.Adapter adapter) {
+            this.adapter = adapter;
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            adapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void notifyItemRangeChanged(int positionStart, int itemCount) {
+            adapter.notifyItemRangeChanged(positionStart, itemCount);
+        }
+
+        @Override
+        public void notifyItemMoved(int fromPosition, int toPosition) {
+            adapter.notifyItemMoved(fromPosition, toPosition);
+        }
+
+        @Override
+        public void notifyItemRangeInserted(int positionStart, int itemCount) {
+            adapter.notifyItemRangeInserted(positionStart, itemCount);
+            int count = adapter.getItemCount();
+            int changedStart = positionStart + itemCount;
+            if (changedStart < count) {
+                adapter.notifyItemRangeChanged(changedStart, count - changedStart);
+            }
+        }
+
+        @Override
+        public void notifyItemRangeRemoved(int positionStart, int itemCount) {
+            adapter.notifyItemRangeRemoved(positionStart, itemCount);
+            int count = adapter.getItemCount();
+            if (positionStart < count) {
+                adapter.notifyItemRangeChanged(positionStart, count - positionStart);
+            }
+        }
     }
 }

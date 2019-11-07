@@ -49,15 +49,13 @@ public abstract class Cell implements CellParent {
         attachStateChangeListener = new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-
             }
         };
-        view.setTag(R.id.tag_key_attach_listener);
+        view.setTag(R.id.tag_key_attach_listener,attachStateChangeListener);
         view.addOnAttachStateChangeListener(attachStateChangeListener);
         if (ViewCompat.isAttachedToWindow(view)) {
             attachStateChangeListener.onViewAttachedToWindow(view);
@@ -222,4 +220,6 @@ public abstract class Cell implements CellParent {
         }
         parent.handChildChanged(parent,parent.getDataIndex(this), Collections.singletonList(this),Collections.singletonList(this));
     }
+
+
 }

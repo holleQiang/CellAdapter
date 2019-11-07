@@ -57,6 +57,10 @@ public final class CellRoot implements CellParent {
             mAdapter.notifyDataSetChanged();
             return;
         }
+        if (childParent == this && oldList.size() == childParent.getDataCount()) {
+            mAdapter.notifyDataSetChanged();
+            return;
+        }
         int index = getRealChildIndex(childParent, position);
         if (index < 0) {
             return;

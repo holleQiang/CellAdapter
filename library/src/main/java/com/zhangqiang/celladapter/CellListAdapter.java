@@ -1,6 +1,5 @@
 package com.zhangqiang.celladapter;
 
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -12,9 +11,9 @@ import com.zhangqiang.celladapter.vh.ViewHolder;
 
 import java.util.List;
 
-public class CellListAdapter extends BaseAdapter implements Adapter, DataList<Cell> {
+public class CellListAdapter extends BaseAdapter implements DataList<Cell> {
 
-    private final CellRoot cellRoot = new CellRoot(this);
+    private final CellRoot cellRoot = new CellRoot(new InternalAdapter(this));
     private final DataList<Cell> delegate = cellRoot;
     private CellAdapterHelper cellAdapterHelper = new CellAdapterHelper(cellRoot);
 
@@ -39,34 +38,47 @@ public class CellListAdapter extends BaseAdapter implements Adapter, DataList<Ce
             int itemViewType = cellAdapterHelper.getItemViewType(position);
             ViewHolder viewHolder = cellAdapterHelper.onCreateViewHolder(parent, itemViewType);
             convertView = viewHolder.getView();
-            convertView.setTag(R.id.tag_key_view_holder,viewHolder);
+            convertView.setTag(R.id.tag_key_view_holder, viewHolder);
         }
         ViewHolder viewHolder = (ViewHolder) convertView.getTag(R.id.tag_key_view_holder);
-        cellAdapterHelper.onBindViewHolder(viewHolder,position);
-
-        new CellRVAdapter().notifyDataSetChanged();
+        cellAdapterHelper.onBindViewHolder(viewHolder, position);
         return convertView;
     }
 
-    @Override
-    public void notifyItemRangeChanged(int positionStart, int itemCount) {
-        this.notifyDataSetChanged();
+    private static class InternalAdapter implements Adapter {
+
+        BaseAdapter baseAdapter;
+
+        InternalAdapter(BaseAdapter baseAdapter) {
+            this.baseAdapter = baseAdapter;
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            baseAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void notifyItemRangeChanged(int positionStart, int itemCount) {
+            baseAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void notifyItemMoved(int fromPosition, int toPosition) {
+            baseAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void notifyItemRangeInserted(int positionStart, int itemCount) {
+            baseAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void notifyItemRangeRemoved(int positionStart, int itemCount) {
+            baseAdapter.notifyDataSetChanged();
+        }
     }
 
-    @Override
-    public void notifyItemMoved(int fromPosition, int toPosition) {
-        this.notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyItemRangeInserted(int positionStart, int itemCount) {
-        this.notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyItemRangeRemoved(int positionStart, int itemCount) {
-        this.notifyDataSetChanged();
-    }
 
     @Override
     public void addDataAtIndex(Cell data, int position) {

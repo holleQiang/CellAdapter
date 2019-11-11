@@ -1,14 +1,14 @@
 package com.zhangqiang.celladapter.cell;
 
 import android.support.annotation.NonNull;
-import android.support.v4.view.ViewCompat;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.zhangqiang.celladapter.R;
 import com.zhangqiang.celladapter.observable.ObservableDataList;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +18,7 @@ public abstract class Cell implements CellParent {
     private int mSpanSize = 1;
     private CellParent mParent;
     private ObservableDataList<Cell> observableDataList = new ObservableDataList<>();
+    private WeakReference<ViewHolder> viewHolderRef;
 
     public Cell() {
         observableDataList.addDataObserver(new ParentSettingsObserver(this));
@@ -41,30 +42,30 @@ public abstract class Cell implements CellParent {
     }
 
     public void bindViewHolder(ViewHolder vh) {
-        View view = vh.getView();
-        View.OnAttachStateChangeListener attachStateChangeListener = (View.OnAttachStateChangeListener) view.getTag(R.id.tag_key_attach_listener);
-        if (attachStateChangeListener != null) {
-            view.removeOnAttachStateChangeListener(attachStateChangeListener);
-        }
-        attachStateChangeListener = new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View v) {
-            }
-
-            @Override
-            public void onViewDetachedFromWindow(View v) {
-            }
-        };
-        view.setTag(R.id.tag_key_attach_listener,attachStateChangeListener);
-        view.addOnAttachStateChangeListener(attachStateChangeListener);
-        if (ViewCompat.isAttachedToWindow(view)) {
-            attachStateChangeListener.onViewAttachedToWindow(view);
-        }
-
+        viewHolderRef = new WeakReference<>(vh);
         onBindViewHolder(vh);
     }
 
     protected abstract void onBindViewHolder(ViewHolder vh);
+
+    @Nullable
+    public final ViewHolder getViewHolder(){
+        return viewHolderRef == null ? null : viewHolderRef.get();
+    }
+
+    public static void setOnAttachStateChangeListener(int tagKey,View view,View.OnAttachStateChangeListener attachStateChangeListener){
+
+        View.OnAttachStateChangeListener oldAttachStateChangeListener = (View.OnAttachStateChangeListener) view.getTag(tagKey);
+        if (oldAttachStateChangeListener != null) {
+            view.removeOnAttachStateChangeListener(oldAttachStateChangeListener);
+            view.setTag(tagKey,null);
+        }
+        if (attachStateChangeListener != null) {
+            view.setTag(tagKey,attachStateChangeListener);
+            view.addOnAttachStateChangeListener(attachStateChangeListener);
+        }
+    }
+
 
     @Override
     public CellParent getParent() {

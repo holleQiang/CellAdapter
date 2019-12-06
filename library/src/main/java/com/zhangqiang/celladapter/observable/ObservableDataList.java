@@ -54,11 +54,12 @@ public class ObservableDataList<T> implements DataList<T> {
     }
 
     @Override
-    public void removeDataAtIndex(int position) {
+    public T removeDataAtIndex(int position) {
         T removed = mDataList.remove(position);
         for (int i = dataObservers.size() - 1; i >= 0; i--) {
             dataObservers.get(i).onDataRemoved(position, Collections.singletonList(removed));
         }
+        return removed;
     }
 
     @Override
@@ -70,13 +71,13 @@ public class ObservableDataList<T> implements DataList<T> {
     }
 
     @Override
-    public void removeDataFrom(int position, int count) {
+    public List<T> removeDataFrom(int position, int count) {
         int index = 0;
         List<T> removedList = new ArrayList<>();
         Iterator<T> iterator = mDataList.iterator();
-        while (iterator.hasNext()) {
-            if (index >= position && index < position + count) {
-                T next = iterator.next();
+        while (iterator.hasNext() && index < position + count) {
+            T next = iterator.next();
+            if (index >= position) {
                 iterator.remove();
                 removedList.add(next);
             }
@@ -85,11 +86,12 @@ public class ObservableDataList<T> implements DataList<T> {
         for (int i = dataObservers.size() - 1; i >= 0; i--) {
             dataObservers.get(i).onDataRemoved(position, removedList);
         }
+        return removedList;
     }
 
     @Override
-    public void removeDataFrom(int position) {
-        removeDataFrom(position, getDataCount() - 1 - position);
+    public List<T> removeDataFrom(int position) {
+        return removeDataFrom(position, getDataCount() - position);
     }
 
     @Override
@@ -123,7 +125,7 @@ public class ObservableDataList<T> implements DataList<T> {
             newList = new ArrayList<>();
         }
         for (int i = dataObservers.size() - 1; i >= 0; i--) {
-            dataObservers.get(i).onDataChanged(0,  oldList, newList);
+            dataObservers.get(i).onDataChanged(0, oldList, newList);
         }
     }
 
@@ -139,33 +141,35 @@ public class ObservableDataList<T> implements DataList<T> {
 
     @Override
     public void swap(int fromPosition, int toPosition) {
-        Collections.swap(mDataList,fromPosition,toPosition);
+        Collections.swap(mDataList, fromPosition, toPosition);
         for (int i = dataObservers.size() - 1; i >= 0; i--) {
             dataObservers.get(i).onDataMoved(fromPosition, toPosition);
         }
     }
 
     @Override
-    public void replace(int position, T data) {
+    public T replace(int position, T data) {
         T prevData = mDataList.set(position, data);
         for (int i = dataObservers.size() - 1; i >= 0; i--) {
-            dataObservers.get(i).onDataChanged(0, Collections.singletonList(prevData), Collections.singletonList(data));
+            dataObservers.get(i).onDataChanged(position, Collections.singletonList(prevData), Collections.singletonList(data));
         }
+        return prevData;
     }
 
     @Override
-    public <E extends T> void replace(int position, List<E> dataList) {
+    public <E extends T> T replace(int position, List<E> dataList) {
         T removed = mDataList.remove(position);
         List<E> newList;
         if (dataList == null) {
             newList = new ArrayList<>();
         } else {
             newList = new ArrayList<>(dataList);
-            mDataList.addAll(dataList);
+            mDataList.addAll(position,dataList);
         }
         for (int i = dataObservers.size() - 1; i >= 0; i--) {
-            dataObservers.get(i).onDataChanged(0, Collections.singletonList(removed), newList);
+            dataObservers.get(i).onDataChanged(position, Collections.singletonList(removed), newList);
         }
+        return removed;
     }
 
     @Override

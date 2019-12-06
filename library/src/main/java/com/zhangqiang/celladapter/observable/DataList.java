@@ -16,13 +16,13 @@ public interface DataList<T> {
 
     <E extends T> void addDataListAtFirst(List<E> dataList);
 
-    void removeDataAtIndex(int position);
+    T removeDataAtIndex(int position);
 
     void removeData(T data);
 
-    void removeDataFrom(int position, int count);
+    List<T> removeDataFrom(int position, int count);
 
-    void removeDataFrom(int position);
+    List<T> removeDataFrom(int position);
 
     void removeAll();
 
@@ -38,9 +38,9 @@ public interface DataList<T> {
 
     void swap(int fromPosition, int toPosition);
 
-    void replace(int position, T data);
+    T replace(int position, T data);
 
-    <E extends T>  void replace(int position, List<E> dataList);
+    <E extends T>  T replace(int position, List<E> dataList);
 
     List<T> subList(int position,int count);
 }

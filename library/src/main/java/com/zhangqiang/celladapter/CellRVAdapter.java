@@ -126,8 +126,8 @@ public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements D
     }
 
     @Override
-    public void removeDataAtIndex(int position) {
-        delegate.removeDataAtIndex(position);
+    public Cell removeDataAtIndex(int position) {
+        return delegate.removeDataAtIndex(position);
     }
 
     @Override
@@ -136,13 +136,13 @@ public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements D
     }
 
     @Override
-    public void removeDataFrom(int position, int count) {
-        delegate.removeDataFrom(position, count);
+    public List<Cell> removeDataFrom(int position, int count) {
+        return delegate.removeDataFrom(position, count);
     }
 
     @Override
-    public void removeDataFrom(int position) {
-        delegate.removeDataFrom(position);
+    public List<Cell> removeDataFrom(int position) {
+        return delegate.removeDataFrom(position);
     }
 
     @Override
@@ -181,13 +181,13 @@ public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements D
     }
 
     @Override
-    public void replace(int position, Cell data) {
-        delegate.replace(position, data);
+    public Cell replace(int position, Cell data) {
+        return delegate.replace(position, data);
     }
 
     @Override
-    public <E extends Cell> void replace(int position, List<E> dataList) {
-        delegate.replace(position, dataList);
+    public <E extends Cell> Cell replace(int position, List<E> dataList) {
+        return delegate.replace(position, dataList);
     }
 
     @Override

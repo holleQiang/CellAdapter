@@ -141,8 +141,8 @@ public final class CellRoot implements CellParent {
     }
 
     @Override
-    public void removeDataAtIndex(int position) {
-        dataObserver.removeDataAtIndex(position);
+    public Cell removeDataAtIndex(int position) {
+        return dataObserver.removeDataAtIndex(position);
     }
 
     @Override
@@ -151,13 +151,13 @@ public final class CellRoot implements CellParent {
     }
 
     @Override
-    public void removeDataFrom(int position, int count) {
-        dataObserver.removeDataFrom(position, count);
+    public List<Cell> removeDataFrom(int position, int count) {
+        return dataObserver.removeDataFrom(position, count);
     }
 
     @Override
-    public void removeDataFrom(int position) {
-        dataObserver.removeDataFrom(position);
+    public List<Cell> removeDataFrom(int position) {
+        return dataObserver.removeDataFrom(position);
     }
 
     @Override
@@ -196,13 +196,13 @@ public final class CellRoot implements CellParent {
     }
 
     @Override
-    public void replace(int position, Cell data) {
-        dataObserver.replace(position, data);
+    public Cell replace(int position, Cell data) {
+        return dataObserver.replace(position, data);
     }
 
     @Override
-    public <E extends Cell> void replace(int position, List<E> dataList) {
-        dataObserver.replace(position, dataList);
+    public <E extends Cell> Cell replace(int position, List<E> dataList) {
+        return dataObserver.replace(position, dataList);
     }
 
     @Override

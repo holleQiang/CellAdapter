@@ -13,7 +13,7 @@ import java.util.List;
 
 public class CellListAdapter extends BaseAdapter implements DataList<Cell> {
 
-    private final CellRoot cellRoot = new CellRoot(new InternalAdapter(this));
+    private final CellRoot cellRoot = new CellRoot(new InternalChangedNotifier(this));
     private final DataList<Cell> delegate = cellRoot;
     private CellAdapterHelper cellAdapterHelper = new CellAdapterHelper(cellRoot);
 
@@ -45,11 +45,11 @@ public class CellListAdapter extends BaseAdapter implements DataList<Cell> {
         return convertView;
     }
 
-    private static class InternalAdapter implements Adapter {
+    private static class InternalChangedNotifier implements ChangedNotifier {
 
         BaseAdapter baseAdapter;
 
-        InternalAdapter(BaseAdapter baseAdapter) {
+        InternalChangedNotifier(BaseAdapter baseAdapter) {
             this.baseAdapter = baseAdapter;
         }
 

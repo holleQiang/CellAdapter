@@ -10,32 +10,6 @@ public class CellUtils {
 
     private static final Deque<Cell> mCellDeque = new LinkedList<>();
 
-
-    public static int indexOfChild(Cell cellParent, Cell child) {
-
-        try {
-
-            checkThread();
-
-            int index = -1;
-            if (child == null) {
-                return index;
-            }
-            addChildToStack(cellParent);
-            Cell tempCell;
-            while ((tempCell = mCellDeque.pollLast()) != null) {
-                index++;
-                if (tempCell == child) {
-                    return index;
-                }
-                addChildToStack(tempCell);
-            }
-            return -1;
-        } finally {
-            mCellDeque.clear();
-        }
-    }
-
     public static int getChildCount(Cell cellParent) {
 
         try {
@@ -80,6 +54,23 @@ public class CellUtils {
         }
     }
 
+    public static void addChildToList(Cell cellParent, List<Cell> cellList){
+
+        try {
+            if (cellParent == null) {
+                return;
+            }
+            checkThread();
+            addChildToStack(cellParent);
+            Cell tempCell;
+            while ((tempCell = mCellDeque.pollLast()) != null){
+                cellList.add(tempCell);
+                addChildToStack(tempCell);
+            }
+        }finally {
+            mCellDeque.clear();
+        }
+    }
 
     public static Cell getChildAt(Cell cellParent, int position) {
 

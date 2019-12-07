@@ -1,6 +1,6 @@
 package com.zhangqiang.celladapter;
 
-public interface Adapter {
+public interface ChangedNotifier {
 
     void notifyDataSetChanged();
 

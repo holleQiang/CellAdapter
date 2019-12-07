@@ -2,46 +2,29 @@ package com.zhangqiang.celladapter.cell;
 
 import android.support.annotation.NonNull;
 
-import com.zhangqiang.celladapter.Adapter;
+import com.zhangqiang.celladapter.ChangedNotifier;
 import com.zhangqiang.celladapter.observable.ObservableDataList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class CellRoot implements CellParent {
 
     private final ObservableDataList<Cell> dataObserver = new ObservableDataList<>();
-    private Adapter mAdapter;
-    private int cellCount;
+    private ChangedNotifier mChangedNotifier;
+    private final List<Cell> totalCells = new ArrayList<>();
 
-    public CellRoot(Adapter adapter) {
-        this.mAdapter = adapter;
+    public CellRoot(ChangedNotifier changedNotifier) {
+        this.mChangedNotifier = changedNotifier;
         dataObserver.addDataObserver(new ParentSettingsObserver(this));
     }
 
     public int getTotalCellCount() {
-        return cellCount;
+        return totalCells.size();
     }
 
     public Cell getCellAt(int index) {
-        if (index < 0) {
-            return null;
-        }
-        int tempIndex = 0;
-        int dataCount = getDataCount();
-        for (int i = 0; i < dataCount; i++) {
-            Cell data = getDataAt(i);
-            if (tempIndex == index) {
-                return data;
-            }
-            tempIndex++;
-            int childCount = CellUtils.getChildCount(data);
-            if (index >= tempIndex && index < tempIndex + childCount) {
-                return CellUtils.getChildAt(data, index - tempIndex);
-            } else {
-                tempIndex += childCount;
-            }
-        }
-        return null;
+        return totalCells.get(index);
     }
 
     @Override
@@ -51,32 +34,33 @@ public final class CellRoot implements CellParent {
 
     @Override
     public <E extends Cell> void handChildChanged(CellParent childParent, int position, @NonNull List<E> oldList, @NonNull List<E> newList) {
-        final int oldCellCount = cellCount;
-        cellCount = computeTotalCellCount();
+        final int oldCellCount = getTotalCellCount();
+        computeTotalCell();
+        int cellCount = getTotalCellCount();
         if (oldCellCount != cellCount) {
-            mAdapter.notifyDataSetChanged();
+            mChangedNotifier.notifyDataSetChanged();
             return;
         }
         if (childParent == this && oldList.size() == childParent.getDataCount()) {
-            mAdapter.notifyDataSetChanged();
+            mChangedNotifier.notifyDataSetChanged();
             return;
         }
         int index = getRealChildIndex(childParent, position);
         if (index < 0) {
             return;
         }
-        mAdapter.notifyItemRangeChanged(index, CellUtils.getCellCount(newList));
+        mChangedNotifier.notifyItemRangeChanged(index, CellUtils.getCellCount(newList));
     }
 
 
     @Override
     public <E extends Cell> void handChildRemoved(CellParent childParent, int position, @NonNull List<E> removedList) {
-        cellCount = computeTotalCellCount();
+        computeTotalCell();
         int index = getRealChildIndex(childParent, position);
         if (index < 0) {
             return;
         }
-        mAdapter.notifyItemRangeRemoved(index, CellUtils.getCellCount(removedList));
+        mChangedNotifier.notifyItemRangeRemoved(index, CellUtils.getCellCount(removedList));
     }
 
     @Override
@@ -94,20 +78,20 @@ public final class CellRoot implements CellParent {
             if (realToPosition < 0) {
                 return;
             }
-            mAdapter.notifyItemMoved(realFromPosition, realToPosition);
+            mChangedNotifier.notifyItemMoved(realFromPosition, realToPosition);
         } else {
-            mAdapter.notifyDataSetChanged();
+            mChangedNotifier.notifyDataSetChanged();
         }
     }
 
     @Override
     public <E extends Cell> void handChildAdded(CellParent childParent, int position, @NonNull List<E> addedList) {
-        cellCount = computeTotalCellCount();
+        computeTotalCell();
         int index = getRealChildIndex(childParent, position);
         if (index < 0) {
             return;
         }
-        mAdapter.notifyItemRangeInserted(index, CellUtils.getCellCount(addedList));
+        mChangedNotifier.notifyItemRangeInserted(index, CellUtils.getCellCount(addedList));
     }
 
     @Override
@@ -239,15 +223,14 @@ public final class CellRoot implements CellParent {
         throw new IllegalArgumentException("illegal childParent" + childParent);
     }
 
-    private int computeTotalCellCount() {
-
-        int count = 0;
+    private void computeTotalCell() {
+        totalCells.clear();
         int dataCount = getDataCount();
         for (int i = 0; i < dataCount; i++) {
-            count++;
             Cell data = getDataAt(i);
-            count += CellUtils.getChildCount(data);
+            totalCells.add(data);
+            CellUtils.addChildToList(data, totalCells);
         }
-        return count;
     }
+
 }

@@ -1,14 +1,12 @@
 package com.zhangqiang.celladapter.cell;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.zhangqiang.celladapter.observable.ObservableDataList;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,7 +16,6 @@ public abstract class Cell implements CellParent {
     private int mSpanSize = 1;
     private CellParent mParent;
     private ObservableDataList<Cell> observableDataList = new ObservableDataList<>();
-    private WeakReference<ViewHolder> viewHolderRef;
 
     public Cell() {
         observableDataList.addDataObserver(new ParentSettingsObserver(this));
@@ -42,16 +39,11 @@ public abstract class Cell implements CellParent {
     }
 
     public void bindViewHolder(ViewHolder vh) {
-        viewHolderRef = new WeakReference<>(vh);
         onBindViewHolder(vh);
     }
 
     protected abstract void onBindViewHolder(ViewHolder vh);
 
-    @Nullable
-    public final ViewHolder getViewHolder() {
-        return viewHolderRef == null ? null : viewHolderRef.get();
-    }
 
     public static void setOnAttachStateChangeListener(int tagKey, View view, View.OnAttachStateChangeListener attachStateChangeListener) {
 

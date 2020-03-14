@@ -1,6 +1,7 @@
 package com.zhangqiang.celladapter.cell;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.zhangqiang.celladapter.ChangedNotifier;
 import com.zhangqiang.celladapter.observable.ObservableDataList;
@@ -33,7 +34,7 @@ public final class CellRoot implements CellParent {
     }
 
     @Override
-    public <E extends Cell> void handChildChanged(CellParent childParent, int position, @NonNull List<E> oldList, @NonNull List<E> newList) {
+    public <E extends Cell> void handChildChanged(CellParent childParent, int position, @NonNull List<E> oldList, @NonNull List<E> newList, @Nullable Object payload) {
         final int oldCellCount = getTotalCellCount();
         computeTotalCell();
         int cellCount = getTotalCellCount();
@@ -49,9 +50,8 @@ public final class CellRoot implements CellParent {
         if (index < 0) {
             return;
         }
-        mChangedNotifier.notifyItemRangeChanged(index, CellUtils.getCellCount(newList));
+        mChangedNotifier.notifyItemRangeChanged(index, CellUtils.getCellCount(newList),payload);
     }
-
 
     @Override
     public <E extends Cell> void handChildRemoved(CellParent childParent, int position, @NonNull List<E> removedList) {

@@ -20,6 +20,7 @@ import com.zhangqiang.celladapter.cell.Cell;
 import com.zhangqiang.celladapter.cell.CellParent;
 import com.zhangqiang.celladapter.cell.ViewHolderBinder;
 import com.zhangqiang.celladapter.cell.MultiCell;
+import com.zhangqiang.celladapter.cell.action.Action;
 import com.zhangqiang.celladapter.cell.expand.ExpandHelper;
 import com.zhangqiang.celladapter.cell.expand.OnExpandStateChangedListener;
 import com.zhangqiang.celladapter.drag.CellDragHelper;
@@ -131,7 +132,13 @@ public class MainActivity extends AppCompatActivity {
                 viewHolder.setOnClickListener(R.id.bt_update, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        multiCell.invalidate();
+                        multiCell.invalidate(new Action() {
+                            @Override
+                            public void onBind(ViewHolder viewHolder) {
+                                viewHolder.setText(R.id.tv_info, s + "&&" + new SimpleDateFormat("HH:mm:ss").format(new Date(System.currentTimeMillis())));
+
+                            }
+                        });
                     }
                 });
                 viewHolder.setText(R.id.tv_info, s + "&&" + new SimpleDateFormat("HH:mm:ss").format(new Date(System.currentTimeMillis())));

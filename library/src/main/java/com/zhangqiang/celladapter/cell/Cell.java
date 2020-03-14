@@ -1,9 +1,11 @@
 package com.zhangqiang.celladapter.cell;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zhangqiang.celladapter.cell.action.Action;
 import com.zhangqiang.celladapter.observable.ObservableDataList;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 
@@ -38,8 +40,16 @@ public abstract class Cell implements CellParent {
         this.mSpanSize = spanSize;
     }
 
-    public void bindViewHolder(ViewHolder vh) {
-        onBindViewHolder(vh);
+    public void bindViewHolder(ViewHolder vh, List<Object> payloads) {
+        if (payloads == null || payloads.isEmpty()) {
+            onBindViewHolder(vh);
+        }else {
+            for (Object payload : payloads) {
+                if (payload instanceof Action) {
+                    ((Action) payload).onBind(vh);
+                }
+            }
+        }
     }
 
     protected abstract void onBindViewHolder(ViewHolder vh);
@@ -172,12 +182,11 @@ public abstract class Cell implements CellParent {
         return observableDataList.subList(position, count);
     }
 
-
     @Override
-    public <E extends Cell> void handChildChanged(CellParent childParent, int position, @NonNull List<E> oldList, @NonNull List<E> newList) {
+    public <E extends Cell> void handChildChanged(CellParent childParent, int position, @NonNull List<E> oldList, @NonNull List<E> newList, @Nullable Object payload) {
         CellParent parent = getParent();
         if (parent != null) {
-            parent.handChildChanged(childParent, position, oldList, newList);
+            parent.handChildChanged(childParent, position, oldList, newList,payload);
         }
     }
 
@@ -205,13 +214,15 @@ public abstract class Cell implements CellParent {
         }
     }
 
-    public void invalidate() {
+    public void invalidate(Action action) {
         CellParent parent = getParent();
         if (parent == null) {
             return;
         }
-        parent.handChildChanged(parent, parent.getDataIndex(this), Collections.singletonList(this), Collections.singletonList(this));
+        parent.handChildChanged(parent, parent.getDataIndex(this), Collections.singletonList(this), Collections.singletonList(this),action);
     }
 
-
+    public void invalidate(){
+        invalidate(null);
+    }
 }

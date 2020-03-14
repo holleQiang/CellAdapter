@@ -41,7 +41,7 @@ public class CellListAdapter extends BaseAdapter implements DataList<Cell> {
             convertView.setTag(R.id.tag_key_view_holder, viewHolder);
         }
         ViewHolder viewHolder = (ViewHolder) convertView.getTag(R.id.tag_key_view_holder);
-        cellAdapterHelper.onBindViewHolder(viewHolder, position);
+        cellAdapterHelper.onBindViewHolder(viewHolder, position, null);
         return convertView;
     }
 
@@ -59,7 +59,7 @@ public class CellListAdapter extends BaseAdapter implements DataList<Cell> {
         }
 
         @Override
-        public void notifyItemRangeChanged(int positionStart, int itemCount) {
+        public void notifyItemRangeChanged(int positionStart, int itemCount, Object payload) {
             baseAdapter.notifyDataSetChanged();
         }
 

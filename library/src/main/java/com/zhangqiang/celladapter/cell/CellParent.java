@@ -1,6 +1,7 @@
 package com.zhangqiang.celladapter.cell;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.zhangqiang.celladapter.observable.DataList;
 
@@ -10,7 +11,11 @@ public interface CellParent extends DataList<Cell> {
 
     CellParent getParent();
 
-    <E extends Cell> void handChildChanged(CellParent childParent, int position, @NonNull List<E> oldList,@NonNull List<E> newList);
+    <E extends Cell> void handChildChanged(CellParent childParent,
+                                           int position,
+                                           @NonNull List<E> oldList,
+                                           @NonNull List<E> newList,
+                                           @Nullable Object payload);
 
     void handChildMoved(CellParent childParent, int fromPosition, int toPosition);
 

@@ -4,7 +4,7 @@ public interface ChangedNotifier {
 
     void notifyDataSetChanged();
 
-    void notifyItemRangeChanged(int positionStart, int itemCount);
+    void notifyItemRangeChanged(int positionStart, int itemCount, Object payload);
 
     void notifyItemMoved(int fromPosition, int toPosition);
 

@@ -27,8 +27,12 @@ public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements D
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder rvViewHolder, int position) {
-        cellAdapterHelper.onBindViewHolder(rvViewHolder, position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
+        cellAdapterHelper.onBindViewHolder(holder, position,payloads);
     }
 
     @Override
@@ -220,8 +224,8 @@ public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements D
         }
 
         @Override
-        public void notifyItemRangeChanged(int positionStart, int itemCount) {
-            adapter.notifyItemRangeChanged(positionStart, itemCount);
+        public void notifyItemRangeChanged(int positionStart, int itemCount, Object payload) {
+            adapter.notifyItemRangeChanged(positionStart, itemCount,payload);
         }
 
         @Override

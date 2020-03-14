@@ -50,7 +50,7 @@ final class ParentSettingsObserver implements DataObserver<Cell> {
     private <E extends Cell> void handChildChangedInternal(int position, List<E> oldList, List<E> newList) {
         CellParent parent = mParent.getParent();
         if (parent != null) {
-            parent.handChildChanged(mParent, position, oldList, newList);
+            parent.handChildChanged(mParent, position, oldList, newList,null);
         }
     }
 

@@ -8,6 +8,8 @@ import com.zhangqiang.celladapter.cell.Cell;
 import com.zhangqiang.celladapter.cell.CellRoot;
 import com.zhangqiang.celladapter.vh.ViewHolder;
 
+import java.util.List;
+
 public class CellAdapterHelper {
 
 
@@ -31,9 +33,9 @@ public class CellAdapterHelper {
         throw new RuntimeException("cannot find getViewType " + viewTypeDependOn);
     }
 
-    public void onBindViewHolder(@NonNull ViewHolder rvViewHolder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder rvViewHolder, int position, List<Object> payloads) {
         Cell cell = cellRoot.getCellAt(position);
-        cell.bindViewHolder(rvViewHolder);
+        cell.bindViewHolder(rvViewHolder,payloads);
     }
 
     public Cell getCellAt(int position) {

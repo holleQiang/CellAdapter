@@ -15,14 +15,17 @@ import java.util.List;
 public abstract class Cell implements CellParent {
 
     public static final int FULL_SPAN = -1;
-    private int mSpanSize = 1;
+    private final int mSpanSize;
     private CellParent mParent;
-    private ObservableDataList<Cell> observableDataList = new ObservableDataList<>();
+    private ObservableDataList<Cell> observableDataList;
 
     public Cell() {
-        observableDataList.addDataObserver(new ParentSettingsObserver(this));
+        this(1);
     }
 
+    public Cell(int spanSize) {
+        this.mSpanSize = spanSize;
+    }
 
     public ViewHolder createViewHolder(ViewGroup viewGroup) {
         return onCreateViewHolder(viewGroup);
@@ -36,14 +39,10 @@ public abstract class Cell implements CellParent {
         return mSpanSize;
     }
 
-    public void setSpanSize(int spanSize) {
-        this.mSpanSize = spanSize;
-    }
-
     public void bindViewHolder(ViewHolder vh, List<Object> payloads) {
         if (payloads == null || payloads.isEmpty()) {
             onBindViewHolder(vh);
-        }else {
+        } else {
             for (Object payload : payloads) {
                 if (payload instanceof Action) {
                     ((Action) payload).onBind(vh);
@@ -83,102 +82,122 @@ public abstract class Cell implements CellParent {
 
     @Override
     public void addDataAtIndex(Cell data, int position) {
+        checkAndInit();
         observableDataList.addDataAtIndex(data, position);
     }
 
     @Override
     public <E extends Cell> void addDataListAtIndex(List<E> dataList, int position) {
+        checkAndInit();
         observableDataList.addDataListAtIndex(dataList, position);
     }
 
     @Override
     public void addDataAtLast(Cell data) {
+        checkAndInit();
         observableDataList.addDataAtLast(data);
     }
 
     @Override
     public void addDataAtFirst(Cell data) {
+        checkAndInit();
         observableDataList.addDataAtFirst(data);
     }
 
     @Override
     public <E extends Cell> void addDataListAtLast(List<E> dataList) {
+        checkAndInit();
         observableDataList.addDataListAtLast(dataList);
     }
 
     @Override
     public <E extends Cell> void addDataListAtFirst(List<E> dataList) {
+        checkAndInit();
         observableDataList.addDataListAtFirst(dataList);
     }
 
     @Override
     public Cell removeDataAtIndex(int position) {
+        checkAndInit();
         return observableDataList.removeDataAtIndex(position);
     }
 
     @Override
     public void removeData(Cell data) {
+        checkAndInit();
         observableDataList.removeData(data);
     }
 
     @Override
     public List<Cell> removeDataFrom(int position, int count) {
+        checkAndInit();
         return observableDataList.removeDataFrom(position, count);
     }
 
     @Override
     public List<Cell> removeDataFrom(int position) {
-       return observableDataList.removeDataFrom(position);
+        checkAndInit();
+        return observableDataList.removeDataFrom(position);
     }
 
     @Override
     public void removeAll() {
+        checkAndInit();
         observableDataList.removeAll();
     }
 
     @Override
     public int getDataIndex(Cell data) {
+        checkAndInit();
         return observableDataList.getDataIndex(data);
     }
 
     @Override
     public boolean isEmpty() {
+        checkAndInit();
         return observableDataList.isEmpty();
     }
 
     @Override
     public <E extends Cell> void setDataList(List<E> dataList) {
+        checkAndInit();
         observableDataList.setDataList(dataList);
     }
 
     @Override
     public int getDataCount() {
+        checkAndInit();
         return observableDataList.getDataCount();
     }
 
     @Override
     public Cell getDataAt(int position) {
+        checkAndInit();
         return observableDataList.getDataAt(position);
     }
 
     @Override
     public void swap(int fromPosition, int toPosition) {
+        checkAndInit();
         observableDataList.swap(fromPosition, toPosition);
     }
 
     @Override
     public Cell replace(int position, Cell data) {
+        checkAndInit();
         return observableDataList.replace(position, data);
     }
 
 
     @Override
     public <E extends Cell> Cell replace(int position, List<E> dataList) {
+        checkAndInit();
         return observableDataList.replace(position, dataList);
     }
 
     @Override
     public List<Cell> subList(int position, int count) {
+        checkAndInit();
         return observableDataList.subList(position, count);
     }
 
@@ -186,7 +205,7 @@ public abstract class Cell implements CellParent {
     public <E extends Cell> void handChildChanged(CellParent childParent, int position, @NonNull List<E> oldList, @NonNull List<E> newList, @Nullable Object payload) {
         CellParent parent = getParent();
         if (parent != null) {
-            parent.handChildChanged(childParent, position, oldList, newList,payload);
+            parent.handChildChanged(childParent, position, oldList, newList, payload);
         }
     }
 
@@ -219,10 +238,18 @@ public abstract class Cell implements CellParent {
         if (parent == null) {
             return;
         }
-        parent.handChildChanged(parent, parent.getDataIndex(this), Collections.singletonList(this), Collections.singletonList(this),action);
+        parent.handChildChanged(parent, parent.getDataIndex(this), Collections.singletonList(this), Collections.singletonList(this), action);
     }
 
-    public void invalidate(){
+    public void invalidate() {
         invalidate(null);
+    }
+
+    private void checkAndInit() {
+        if (observableDataList != null) {
+            return;
+        }
+        observableDataList = new ObservableDataList<>();
+        observableDataList.addDataObserver(new ParentSettingsObserver(this));
     }
 }

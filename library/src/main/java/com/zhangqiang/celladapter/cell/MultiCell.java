@@ -10,6 +10,13 @@ public class MultiCell<T> extends Cell {
     private T data;
     private ViewHolderBinder<T> viewHolderBinder;
 
+    public MultiCell(int spanSize, int layoutId, T data, ViewHolderBinder<T> viewHolderBinder) {
+        super(spanSize);
+        this.layoutId = layoutId;
+        this.data = data;
+        this.viewHolderBinder = viewHolderBinder;
+    }
+
     public MultiCell(int layoutId, T data, ViewHolderBinder<T> viewHolderBinder) {
         this.layoutId = layoutId;
         this.data = data;

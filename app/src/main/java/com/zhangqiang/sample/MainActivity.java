@@ -92,8 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Cell newAddCell(final String text) {
 
-        final MultiCell<String> multiCell = new MultiCell<>(R.layout.item_test_add, text, null);
-        multiCell.setSpanSize(Cell.FULL_SPAN);
+        final MultiCell<String> multiCell = new MultiCell<>(Cell.FULL_SPAN,R.layout.item_test_add, text, null);
         final ExpandHelper expandHelper = new ExpandHelper(multiCell);
         multiCell.setViewHolderBinder(new ViewHolderBinder<String>() {
             @Override

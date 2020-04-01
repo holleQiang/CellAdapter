@@ -118,43 +118,57 @@ public abstract class Cell implements CellParent {
 
     @Override
     public Cell removeDataAtIndex(int position) {
-        checkAndInit();
+        if (observableDataList == null) {
+            return null;
+        }
         return observableDataList.removeDataAtIndex(position);
     }
 
     @Override
     public void removeData(Cell data) {
-        checkAndInit();
+        if (observableDataList == null) {
+            return;
+        }
         observableDataList.removeData(data);
     }
 
     @Override
     public List<Cell> removeDataFrom(int position, int count) {
-        checkAndInit();
+        if (observableDataList == null) {
+            return null;
+        }
         return observableDataList.removeDataFrom(position, count);
     }
 
     @Override
     public List<Cell> removeDataFrom(int position) {
-        checkAndInit();
+        if (observableDataList == null) {
+            return null;
+        }
         return observableDataList.removeDataFrom(position);
     }
 
     @Override
     public void removeAll() {
-        checkAndInit();
+        if (observableDataList == null) {
+            return ;
+        }
         observableDataList.removeAll();
     }
 
     @Override
     public int getDataIndex(Cell data) {
-        checkAndInit();
+        if (observableDataList == null) {
+            return -1;
+        }
         return observableDataList.getDataIndex(data);
     }
 
     @Override
     public boolean isEmpty() {
-        checkAndInit();
+        if (observableDataList == null) {
+            return true;
+        }
         return observableDataList.isEmpty();
     }
 
@@ -166,38 +180,50 @@ public abstract class Cell implements CellParent {
 
     @Override
     public int getDataCount() {
-        checkAndInit();
+        if (observableDataList == null) {
+            return 0;
+        }
         return observableDataList.getDataCount();
     }
 
     @Override
     public Cell getDataAt(int position) {
-        checkAndInit();
+        if (observableDataList == null) {
+            return null;
+        }
         return observableDataList.getDataAt(position);
     }
 
     @Override
     public void swap(int fromPosition, int toPosition) {
-        checkAndInit();
+        if (observableDataList == null) {
+            return ;
+        }
         observableDataList.swap(fromPosition, toPosition);
     }
 
     @Override
     public Cell replace(int position, Cell data) {
-        checkAndInit();
+        if (observableDataList == null) {
+            return null;
+        }
         return observableDataList.replace(position, data);
     }
 
 
     @Override
     public <E extends Cell> Cell replace(int position, List<E> dataList) {
-        checkAndInit();
+        if (observableDataList == null) {
+            return null;
+        }
         return observableDataList.replace(position, dataList);
     }
 
     @Override
     public List<Cell> subList(int position, int count) {
-        checkAndInit();
+        if (observableDataList == null) {
+            return null;
+        }
         return observableDataList.subList(position, count);
     }
 

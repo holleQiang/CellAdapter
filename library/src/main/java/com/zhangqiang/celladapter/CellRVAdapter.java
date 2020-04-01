@@ -19,6 +19,7 @@ public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements D
     private final CellRoot cellRoot = new CellRoot(changedNotifier);
     private final DataList<Cell> delegate = cellRoot;
     private CellAdapterHelper cellAdapterHelper = new CellAdapterHelper(cellRoot);
+    private RecyclerView attachedView;
 
     @NonNull
     @Override
@@ -76,6 +77,7 @@ public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements D
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+        attachedView = recyclerView;
         final RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
 
@@ -98,6 +100,12 @@ public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements D
                 }
             });
         }
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        attachedView = null;
     }
 
     @Override
@@ -201,7 +209,7 @@ public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements D
     }
 
 
-    private static class RVChangedNotifier implements ChangedNotifier {
+    private  class RVChangedNotifier implements ChangedNotifier {
 
         private RecyclerView.Adapter adapter;
         private boolean notifyChanged = true;
@@ -220,39 +228,72 @@ public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements D
 
         @Override
         public void notifyDataSetChanged() {
-            adapter.notifyDataSetChanged();
-        }
-
-        @Override
-        public void notifyItemRangeChanged(int positionStart, int itemCount, Object payload) {
-            adapter.notifyItemRangeChanged(positionStart, itemCount,payload);
-        }
-
-        @Override
-        public void notifyItemMoved(int fromPosition, int toPosition) {
-            adapter.notifyItemMoved(fromPosition, toPosition);
-        }
-
-        @Override
-        public void notifyItemRangeInserted(int positionStart, int itemCount) {
-            adapter.notifyItemRangeInserted(positionStart, itemCount);
-            if (notifyChanged) {
-                int count = adapter.getItemCount();
-                int changedStart = positionStart + itemCount;
-                if (changedStart < count) {
-                    adapter.notifyItemRangeChanged(changedStart, count - changedStart);
+            runWhenNotComputingLayout(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
                 }
-            }
+            });
         }
 
         @Override
-        public void notifyItemRangeRemoved(int positionStart, int itemCount) {
-            adapter.notifyItemRangeRemoved(positionStart, itemCount);
-            if(notifyChanged){
-                int count = adapter.getItemCount();
-                if (positionStart < count) {
-                    adapter.notifyItemRangeChanged(positionStart, count - positionStart);
+        public void notifyItemRangeChanged(final int positionStart, final int itemCount, final Object payload) {
+            runWhenNotComputingLayout(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyItemRangeChanged(positionStart, itemCount,payload);
                 }
+            });
+        }
+
+        @Override
+        public void notifyItemMoved(final int fromPosition, final int toPosition) {
+            runWhenNotComputingLayout(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyItemMoved(fromPosition, toPosition);
+                }
+            });
+        }
+
+        @Override
+        public void notifyItemRangeInserted(final int positionStart, final int itemCount) {
+            runWhenNotComputingLayout(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyItemRangeInserted(positionStart, itemCount);
+                    if (notifyChanged) {
+                        int count = adapter.getItemCount();
+                        int changedStart = positionStart + itemCount;
+                        if (changedStart < count) {
+                            adapter.notifyItemRangeChanged(changedStart, count - changedStart);
+                        }
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void notifyItemRangeRemoved(final int positionStart, final int itemCount) {
+            runWhenNotComputingLayout(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyItemRangeRemoved(positionStart, itemCount);
+                    if(notifyChanged){
+                        int count = adapter.getItemCount();
+                        if (positionStart < count) {
+                            adapter.notifyItemRangeChanged(positionStart, count - positionStart);
+                        }
+                    }
+                }
+            });
+        }
+
+        private void runWhenNotComputingLayout(Runnable runnable){
+            if (attachedView != null && attachedView.isComputingLayout()) {
+                attachedView.post(runnable);
+            }else {
+                runnable.run();
             }
         }
     }

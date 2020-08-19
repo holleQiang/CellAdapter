@@ -42,10 +42,6 @@ public final class CellRoot implements CellParent {
             mChangedNotifier.notifyDataSetChanged();
             return;
         }
-        if (childParent == this && oldList.size() == childParent.getDataCount()) {
-            mChangedNotifier.notifyDataSetChanged();
-            return;
-        }
         int index = getRealChildIndex(childParent, position);
         if (index < 0) {
             return;

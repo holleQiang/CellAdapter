@@ -15,7 +15,7 @@ public class CellListAdapter extends BaseAdapter implements DataList<Cell> {
 
     private final CellRoot cellRoot = new CellRoot(new InternalChangedNotifier(this));
     private final DataList<Cell> delegate = cellRoot;
-    private CellAdapterHelper cellAdapterHelper = new CellAdapterHelper(cellRoot);
+    private final CellAdapterHelper cellAdapterHelper = new CellAdapterHelper(cellRoot);
 
     @Override
     public int getCount() {

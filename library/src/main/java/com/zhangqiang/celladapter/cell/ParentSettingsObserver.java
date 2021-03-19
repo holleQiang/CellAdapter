@@ -8,7 +8,7 @@ import java.util.List;
 
 final class ParentSettingsObserver implements DataObserver<Cell> {
 
-    private CellParent mParent;
+    private final CellParent mParent;
 
     ParentSettingsObserver(CellParent parent) {
         this.mParent = parent;

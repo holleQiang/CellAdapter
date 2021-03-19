@@ -24,11 +24,11 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-public final class ViewHolder extends RecyclerView.ViewHolder{
+public class ViewHolder extends RecyclerView.ViewHolder{
 
     private final SparseArray<View> views = new SparseArray<>();
 
-    private View contentView;
+    private final View contentView;
 
     public static ViewHolder create(ViewGroup viewGroup, int layoutId){
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(layoutId, viewGroup, false);

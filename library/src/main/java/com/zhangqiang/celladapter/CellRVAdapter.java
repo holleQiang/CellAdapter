@@ -18,7 +18,7 @@ public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements D
     private final RVChangedNotifier changedNotifier = new RVChangedNotifier(this);
     private final CellRoot cellRoot = new CellRoot(changedNotifier);
     private final DataList<Cell> delegate = cellRoot;
-    private CellAdapterHelper cellAdapterHelper = new CellAdapterHelper(cellRoot);
+    private final CellAdapterHelper cellAdapterHelper = new CellAdapterHelper(cellRoot);
 
     @NonNull
     @Override
@@ -206,11 +206,11 @@ public class CellRVAdapter extends RecyclerView.Adapter<ViewHolder> implements D
     }
 
 
-    private class RVChangedNotifier implements ChangedNotifier {
+    private static class RVChangedNotifier implements ChangedNotifier {
 
-        private RecyclerView.Adapter adapter;
+        private final RecyclerView.Adapter<?> adapter;
 
-        RVChangedNotifier(RecyclerView.Adapter adapter) {
+        RVChangedNotifier(RecyclerView.Adapter<?> adapter) {
             this.adapter = adapter;
         }
 

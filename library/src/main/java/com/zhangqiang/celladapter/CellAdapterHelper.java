@@ -13,13 +13,13 @@ import java.util.List;
 public class CellAdapterHelper {
 
 
-    private CellRoot cellRoot;
+    private final CellRoot cellRoot;
 
     public CellAdapterHelper(CellRoot cellParent) {
         this.cellRoot = cellParent;
     }
 
-    private SparseIntArray viewTypeDepends = new SparseIntArray();
+    private final SparseIntArray viewTypeDepends = new SparseIntArray();
 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         int viewTypeDependOn = viewTypeDepends.get(viewType);
